@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-mirrorlink"
+        version="0.0.1">
+    <name>Mirror Link</name>
+    <description>Mirror Link Api</description>
+    <license>MIT</license>
+    <keywords>cordova,plugin,mirrorlink</keywords>
+    <repo>https://github.com/buse974/cordova-plugin-mirrorlink.git</repo>
+    <issue>https://github.com/buse974/cordova-plugin-mirrorlink/issues</issue>
+
+    <js-module src="www/plugin.js" name="MirrorLink">
+        <clobbers target="cordova.plugins.MirrorLink" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="com.mirrorlink.android.service.ACCESS_PERMISSION" />
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
+            <intent-filter>
+                <action android:name="com.mirrorlink.android.app.TERMINATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.mirrorlink.android.app.LAUNCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </config-file>
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="DeviceStatus" >
+                <param name="android-package" value="com.babblecar.mirrorlink.DeviceStatus"/>
+            </feature>
+            <feature name="EventMapping" >
+                <param name="android-package" value="com.babblecar.mirrorlink.EventMapping"/>
+            </feature>
+            <feature name="Connection" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Connection"/>
+            </feature>
+        </config-file>
+
+
+        <source-file src="src/android/com/babblecar/mirrorlink/Connection.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/MirrorLinkCallback.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/AbstractMirrorLinkPlugin.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/DeviceStatus.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/EventMapping.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/Defs.java" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/ICertificationManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IConnectionManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IContextManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDataServicesManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDeviceInfoManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDeviceStatusManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDisplayManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IEventMappingManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/INotificationManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/ICertificationListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IConnectionListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IContextListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDataServicesListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDeviceInfoListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDeviceStatusListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IDisplayListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/IEventMappingListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/INotificationListener.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+        <source-file src="src/android/com/mirrorlink/android/commonapi/ICommonAPIService.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
+    </platform>
+</plugin>
