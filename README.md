@@ -6,5 +6,6 @@ A plugin cordova for mirrorlink
 
   - Test Unit
   - Javascript interface
+  - Finish Cordava services
   - Documentation
   - Code review
