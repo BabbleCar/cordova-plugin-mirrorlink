@@ -19,6 +19,7 @@ public class Connection extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackGetAudioConnections = null;
     private CallbackContext callbackGetRemoteDisplayConnections = null;
     private CallbackContext callbackIsMirrorLinkSessionEstablished = null;
+    private CallbackContext callbackUnregister = null;
 
     private final IConnectionListener mConnectionListener = new IConnectionListener.Stub() {
         @Override
@@ -48,67 +49,80 @@ public class Connection extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if("onMirrorLinkSessionChanged".equals(action)) {
-            callbackOnMirrorLinkSessionChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onAudioConnectionsChanged".equals(action)){
-            callbackOnAudioConnectionsChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onRemoteDisplayConnectionChanged".equals(action)){
-            callbackOnRemoteDisplayConnectionChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("getAudioConnections".equals(action)) {
-            callbackGetAudioConnections = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetAudioConnections.success(BundleToJSONObject(mConnectionManager.getAudioConnections()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+
+        callbackLocal = null;
+
+        switch (action) {
+            case "onMirrorLinkSessionChanged":
+                callbackOnMirrorLinkSessionChanged = callbackContext;
+                break;
+            case "onAudioConnectionsChanged":
+                callbackOnAudioConnectionsChanged = callbackContext;
+                break;
+            case "onRemoteDisplayConnectionChanged":
+                callbackOnRemoteDisplayConnectionChanged = callbackContext;
+                break;
+            case "getAudioConnections":
+                callbackGetAudioConnections = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetAudioConnections.success(BundleToJSONObject(mConnectionManager.getAudioConnections()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("getRemoteDisplayConnections".equals(action)) {
-            callbackGetRemoteDisplayConnections = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetRemoteDisplayConnections.success(mConnectionManager.getRemoteDisplayConnections());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                };
+                break;
+            case "getRemoteDisplayConnections":
+                callbackGetRemoteDisplayConnections = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetRemoteDisplayConnections.success(mConnectionManager.getRemoteDisplayConnections());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("isMirrorLinkSessionEstablished".equals(action)) {
-            callbackIsMirrorLinkSessionEstablished = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackIsMirrorLinkSessionEstablished.success(mConnectionManager.isMirrorLinkSessionEstablished() ? 1 : 0 );
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                };
+                break;
+            case "isMirrorLinkSessionEstablished":
+                callbackIsMirrorLinkSessionEstablished = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackIsMirrorLinkSessionEstablished.success(mConnectionManager.isMirrorLinkSessionEstablished() ? 1 : 0);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
+                };
+                break;
+            case "unregister" :
+                callbackUnregister = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            mConnectionManager.unregister();
+                            callbackUnregister.success();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            default:
+                callbackContext.error("AlertPlugin." + action + " not found !");
+                return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        execlocal();
+
+        return true;
     }
 
     protected void execlocal() {

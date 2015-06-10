@@ -11,7 +11,7 @@ var mirrolink = {
          * The application should use the calls in the {@link ICertificationManager} to find the latest
          * certification details.
          */
-        onCertificationStatusChanged : function(callback) {
+        onCertificationStatusChanged : function(success, fail) {
             cordova.exec(success, fail, 'Certification', 'onCertificationStatusChanged', []);
         },
         /**
@@ -28,7 +28,7 @@ var mirrolink = {
          *          or null if the application isn't certified or the entity is not part of the list of
          *          certifying entities for the application,
          */
-        getApplicationCertificationInformation : function(entity, callback) {
+        getApplicationCertificationInformation : function(entity, success, fail) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertificationInformation', [entity]);
         },
         /**
@@ -41,7 +41,7 @@ var mirrolink = {
          *
          * @return A bundle detailing {@link Defs.ApplicationCertificationStatus}.
          */
-        getApplicationCertificationStatus : function(callback) {
+        getApplicationCertificationStatus : function(success, fail) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertificationStatus', []);
         },
         /**
@@ -54,28 +54,131 @@ var mirrolink = {
          *
          * @return Comma-separated list of certifying entities, which certified the application,
          */
-        getApplicationCertifyingEntities : function(callback) {
+        getApplicationCertifyingEntities : function(success, fail) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertifyingEntities', []);
+        },
+        /**
+         * Notifies the Manager that the application is not using it anymore.
+         * <br>
+         * Applications are required to call this method when they no longer need to use the Manager.
+         * Once called, if at a later point they need the Manager again, they can re-request access to
+         * it from the {@link ICommonAPIService}.
+         * <br>
+         * Once unregister is received by the server, the application will not receive any more
+         * callbacks from the Manager.
+         */
+        unregister : function(success, fail) {
+            cordova.exec(success, fail, 'Certification', 'unregister', []);
         }
     },
     Connection : {
+        /**
+         * 4.4.4 Established Audio Connections Callback.
+         *
+         * <br>
+         * <i>Function reference 0x0304.</i>
+         * <br>
+         * Indicate that the audio connections changed.
+         *
+         * @param audioConnections Bundle containing the status of the audio connections available. The
+         * details of the fields available are found in {@link Defs.AudioConnections}.
+         */
         onAudioConnectionsChanged : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'onAudioConnectionsChanged', []);
         },
+        /**
+         * 4.4.6 Established Remote Display Connection Callback.
+         *
+         * <br>
+         * <i>Function reference 0x0306.</i>
+         * <br>
+         * Indicate that the remote display connections changed.
+         *
+         * @param remoteDisplayConnection integer indicating the status of the remote display connections
+         * available. The values are defined in {@link Defs.RemoteDisplayConnection}.
+         */
         onRemoteDisplayConnectionChanged : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'onRemoteDisplayConnectionChanged', []);
         },
+        /**
+         * 4.4.3 Established Audio Connections.
+         *
+         * <br>
+         * <i>Function reference 0x0303.</i>
+         * <br>
+         * Established Audio connections within MirrorLink Session
+         *
+         * @return Bundle containing the status of the audio connections available. The details of the
+         * fields available are found in {@link Defs.AudioConnections}.
+         */
         getAudioConnections : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'getAudioConnections', []);
         },
+        /**
+         * 4.4.5 Established Remote Display Connection.
+         *
+         * <br>
+         * <i>Function reference 0x0305.</i>
+         * <br>
+         * Established remote display connection within MirrorLink Session.
+         *
+         * @return Value containing the status of the remote display connections available. The values
+         * are defined in {@link Defs.RemoteDisplayConnection}.
+         */
         getRemoteDisplayConnections : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'getRemoteDisplayConnections', []);
         },
+        /**
+         * 4.4.1 Indicates whether a MirrorLink session is currently established.
+         *
+         * <br>
+         * <i>Function reference 0x0301.</i>
+         * <br>
+         * A MirrorLink is considered established if a ClientProfile has been
+         * set on the MirrorLink Server for the current tethering session.
+         * <br>
+         * The application MUST use this call and its equivalent callback {@link
+         * IConnectionListener#onMirrorLinkSessionChanged} to determine whether a
+         * MirrorLink session is established. MirrorLink applications SHOULD use
+         * other Common API modules only while a MirrorLink Session is running.
+         * MirrorLink Servers MUST have the Common API modules available at all
+         * times.
+         */
         isMirrorLinkSessionEstablished : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'isMirrorLinkSessionEstablished', []);
         },
+        /**
+         * 4.4.2 Established MirrorLink Session Callback.
+         *
+         * <br>
+         * <i>Function reference 0x0302.</i>
+         * <br>
+         * Indicate that the MirrorLink Session status has changed.
+         * <br>
+         * The application MUST use this call and its equivalent callback {@link
+         * IConnectionManager#isMirrorLinkSessionEstablished} to determine whether a
+         * MirrorLink session is established. MirrorLink applications SHOULD use
+         * other Common API modules only while a MirrorLink Session is running.
+         * MirrorLink Servers MUST have the Common API modules available at all
+         * times.
+         *
+         * @param mirrolinkSessionIsEstablished the new status of the MirrorLink session.
+         */
         onMirrorLinkSessionChanged : function (success, fail) {
             cordova.exec(success, fail, 'Connection', 'onMirrorLinkSessionChanged', []);
+        }
+        /**
+         * Notifies the Manager that the application is not using it anymore.
+         * <br>
+         * Applications are required to call this method when they no longer need to use the Manager.
+         * Once called, if at a later point they need the Manager again, they can re-request access to
+         * it from the {@link ICommonAPIService}.
+         * <br>
+         * Once unregister is received by the server, the application will not receive any more
+         * callbacks from the Manager.
+         */
+        unregister : function(success, fail) {
+            cordova.exec(success, fail, 'Connection', 'unregister', []);
         }
     },
     Context : {
