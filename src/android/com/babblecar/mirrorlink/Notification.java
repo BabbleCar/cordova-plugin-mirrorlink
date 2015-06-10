@@ -63,106 +63,101 @@ public class Notification extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if("onNotificationEnabledChanged".equals(action)) {
-            callbackOnNotificationEnabledChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onNotificationConfigurationChanged".equals(action)){
-            callbackOnNotificationConfigurationChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onNotificationActionReceived".equals(action)){
-            callbackOnNotificationActionReceived = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("getNotificationConfiguration".equals(action)) {
-            callbackGetNotificationConfiguration = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetNotificationConfiguration.success(String.valueOf(mNotificationManager.getNotificationConfiguration()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("getNotificationEnabled".equals(action)) {
-            callbackGetNotificationEnabled = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetNotificationEnabled.success(String.valueOf(mNotificationManager.getNotificationEnabled()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("cancelNotification".equals(action)) {
-            callbackCancelNotification = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackCancelNotification.success(String.valueOf(mNotificationManager.cancelNotification(args.getInt(0))));
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("sendVncNotification".equals(action)) {
-            callbackSendVncNotification = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackSendVncNotification.success(String.valueOf(mNotificationManager.sendVncNotification()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("sendClientNotification".equals(action)) {
-            callbackSendClientNotification = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        List<Bundle> actions = new ArrayList<>();
-                        JSONArray jo = args.getJSONArray(3);
-                        for (int i=0;i<jo.length();i++) {
-                            //TODO  Check action with array relational (for json object)
-                            Bundle action =  new Bundle();
-                            action.putInt(Defs.Action.ACTION_ID, i + 1);
-                            //action.putString(Defs.Action.ICON_URL, i+1);
-                            action.putString(Defs.Action.ACTION_NAME, jo.getString(i));
-                            action.putBoolean(Defs.Action.LAUNCH_APP, false);
-                            actions.add(action);
+        callbackLocal = null;
+        switch (action) {
+            case "onNotificationEnabledChanged" :
+                callbackOnNotificationEnabledChanged = callbackContext;
+                break;
+            case "onNotificationConfigurationChanged" :
+                callbackOnNotificationConfigurationChanged = callbackContext;
+                break;
+            case "onNotificationActionReceived" :
+                callbackOnNotificationActionReceived = callbackContext;
+                break;
+            case "getNotificationConfiguration" :
+                callbackGetNotificationConfiguration = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetNotificationConfiguration.success(String.valueOf(mNotificationManager.getNotificationConfiguration()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
                         }
-                        callbackSendClientNotification.success(String.valueOf(mNotificationManager.sendClientNotification(args.getString(0), args.getString(1), Uri.parse(args.getString(2)), actions)));
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-            };
-            execlocal();
-            return true;
+                };
+                break;
+            case "getNotificationEnabled" :
+                callbackGetNotificationEnabled = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetNotificationEnabled.success(String.valueOf(mNotificationManager.getNotificationEnabled()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            case "cancelNotification" :
+                callbackCancelNotification = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackCancelNotification.success(String.valueOf(mNotificationManager.cancelNotification(args.getInt(0))));
+                        } catch (RemoteException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            case "sendVncNotification" :
+                callbackSendVncNotification = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackSendVncNotification.success(String.valueOf(mNotificationManager.sendVncNotification()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            case "sendClientNotification" :
+                callbackSendClientNotification = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            List<Bundle> actions = new ArrayList<>();
+                            JSONArray jo = args.getJSONArray(3);
+                            for (int i=0;i<jo.length();i++) {
+                                //TODO  Check action with array relational (for json object)
+                                Bundle action =  new Bundle();
+                                action.putInt(Defs.Action.ACTION_ID, i + 1);
+                                //action.putString(Defs.Action.ICON_URL, i+1);
+                                action.putString(Defs.Action.ACTION_NAME, jo.getString(i));
+                                action.putBoolean(Defs.Action.LAUNCH_APP, false);
+                                actions.add(action);
+                            }
+                            callbackSendClientNotification.success(String.valueOf(mNotificationManager.sendClientNotification(args.getString(0), args.getString(1), Uri.parse(args.getString(2)), actions)));
+                        } catch (RemoteException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            default:
+                callbackContext.error("AlertPlugin." + action + " not found !");
+                return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        execlocal();
+
+        return true;
     }
 
     protected void execlocal() {

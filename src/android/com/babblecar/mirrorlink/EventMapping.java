@@ -38,48 +38,49 @@ public class EventMapping extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if("onEventConfigurationChanged".equals(action)) {
-            callbackOnEventConfiguration = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onEventMappingChanged".equals(action)){
-            callbackOnEventMapping = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("getEventConfiguration".equals(action)) {
-            callbackEventConfiguration = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackEventConfiguration.success(String.valueOf(mEventMappingManager.getEventConfiguration()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+        callbackLocal = null;
+
+        switch (action) {
+            case "onEventConfigurationChanged" :
+                callbackOnEventConfiguration = callbackContext;
+                break;
+            case "onEventMappingChanged" :
+                callbackOnEventMapping = callbackContext;
+                break;
+            case "getEventConfiguration" :
+                callbackEventConfiguration = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackEventConfiguration.success(String.valueOf(mEventMappingManager.getEventConfiguration()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("getEventMappings".equals(action)) {
-            callbackEventMapping = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackEventMapping.success(String.valueOf(mEventMappingManager.getEventMappings()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                };
+                break;
+            case "getEventMappings" :
+                callbackEventMapping = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackEventMapping.success(String.valueOf(mEventMappingManager.getEventMappings()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
+                };
+                break;
+            default:
+                callbackContext.error("AlertPlugin." + action + " not found !");
+                return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        execlocal();
+
+        return true;
     }
 
     protected void execlocal() {
