@@ -1,15 +1,59 @@
 
 var mirrolink = {
     Certification : {
+        /** Indicate that the application certification status has changed.
+         * <br>
+         * <i>Function reference 0x0204.</i>
+         * <br>
+         * The application would receive this callback if, for example, the certification status changes
+         * when the certificate is revoked.
+         * <br>
+         * The application should use the calls in the {@link ICertificationManager} to find the latest
+         * certification details.
+         */
         onCertificationStatusChanged : function(callback) {
             cordova.exec(success, fail, 'Certification', 'onCertificationStatusChanged', []);
         },
-        getApplicationCertificationInformation : function(callback) {
-            cordova.exec(success, fail, 'Certification', 'getApplicationCertificationInformation', []);
+        /**
+         * 4.3.3 Get Application Certification Information.
+         *
+         * <br>
+         * <i>Function reference 0x0203.</i>
+         * <br>
+         * Provide application certificate information.
+         *
+         * @param   entity the name of the certifying entity,
+         *
+         * @return  Bundle containing {@link Defs.CertificateInformation} for the given entity
+         *          or null if the application isn't certified or the entity is not part of the list of
+         *          certifying entities for the application,
+         */
+        getApplicationCertificationInformation : function(entity, callback) {
+            cordova.exec(success, fail, 'Certification', 'getApplicationCertificationInformation', [entity]);
         },
+        /**
+         * 4.3.1 Get Application Certification Status.
+         *
+         * <br>
+         * <i>Function reference 0x0201.</i>
+         * <br>
+         * Provided application certificate status, as captured from the application certificate.
+         *
+         * @return A bundle detailing {@link Defs.ApplicationCertificationStatus}.
+         */
         getApplicationCertificationStatus : function(callback) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertificationStatus', []);
         },
+        /**
+         * 4.3.2 Get Application Certifying Entities.
+         *
+         * <br>
+         * <i>Function reference 0x0202.</i>
+         * <br>
+         * Provide information on the certifying entities.
+         *
+         * @return Comma-separated list of certifying entities, which certified the application,
+         */
         getApplicationCertifyingEntities : function(callback) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertifyingEntities', []);
         }

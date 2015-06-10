@@ -16,6 +16,7 @@ public class Certification extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackGetApplicationCertificationInformation = null;
     private CallbackContext callbackGetApplicationCertificationStatus = null;
     private CallbackContext callbackGetApplicationCertifyingEntities = null;
+    private CallbackContext callbackUnregister = null;
 
     private final ICertificationListener mCertificationListener = new ICertificationListener.Stub() {
         @Override
@@ -29,60 +30,75 @@ public class Certification extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if("onCertificationStatusChanged".equals(action)) {
-            callbackOnCertificationStatusChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("getApplicationCertificationInformation".equals(action)) {
-            callbackGetApplicationCertificationInformation = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        String entity = args.getString(0);
-                        callbackGetApplicationCertificationInformation.success(BundleToJSONObject(mCertificationManager.getApplicationCertificationInformation(entity)));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        callbackLocal = null;
+        switch (action) {
+            case "onCertificationStatusChanged" :
+                callbackOnCertificationStatusChanged = callbackContext;
+                break;
+            case "getApplicationCertificationInformation" :
+                callbackGetApplicationCertificationInformation = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            String entity = args.getString(0);
+                            callbackGetApplicationCertificationInformation.success(BundleToJSONObject(mCertificationManager.getApplicationCertificationInformation(entity)));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("getApplicationCertificationStatus".equals(action)) {
-            callbackGetApplicationCertificationStatus = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetApplicationCertificationStatus.success(BundleToJSONObject(mCertificationManager.getApplicationCertificationStatus()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                };
+                break;
+            case "getApplicationCertificationStatus" :
+                callbackGetApplicationCertificationStatus = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetApplicationCertificationStatus.success(BundleToJSONObject(mCertificationManager.getApplicationCertificationStatus()));
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("getApplicationCertifyingEntities".equals(action)) {
-            callbackGetApplicationCertifyingEntities = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetApplicationCertifyingEntities.success(mCertificationManager.getApplicationCertifyingEntities());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                };
+                break;
+            case "getApplicationCertifyingEntities" :
+                callbackGetApplicationCertifyingEntities = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            callbackGetApplicationCertifyingEntities.success(mCertificationManager.getApplicationCertifyingEntities());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            };
-            execlocal();
-            return true;
+                };
+                break;
+            case "unregister" :
+                callbackUnregister = callbackContext;
+                callbackLocal = new MirrorLinkCallback()  {
+                    @Override
+                    public void callbackCall() {
+                        try {
+                            mCertificationManager.unregister();
+                            callbackUnregister.success();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                break;
+            default:
+                callbackContext.error("AlertPlugin." + action + " not found !");
+                return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        execlocal();
+
+        return true;
     }
 
     protected void execlocal() {
