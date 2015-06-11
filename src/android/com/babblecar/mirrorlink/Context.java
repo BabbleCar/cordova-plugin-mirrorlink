@@ -65,6 +65,11 @@ public class Context extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onFramebufferBlocked".equals(action)) {
             callbackOnFramebufferBlocked = callbackContext;
         }else if("onAudioBlocked".equals(action)) {

@@ -46,6 +46,11 @@ public class Connection extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onMirrorLinkSessionChanged".equals(action)) {
             callbackOnMirrorLinkSessionChanged = callbackContext;
         } else if("onAudioConnectionsChanged".equals(action)){

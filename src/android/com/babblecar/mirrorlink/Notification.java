@@ -59,6 +59,11 @@ public class Notification extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+        
         if("onNotificationEnabledChanged".equals(action)) {
             callbackOnNotificationEnabledChanged = callbackContext;
         }else if("onNotificationConfigurationChanged".equals(action)){

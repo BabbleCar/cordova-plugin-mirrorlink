@@ -49,7 +49,7 @@ public class Api extends AbstractMirrorLinkPlugin {
                 }, Context.BIND_AUTO_CREATE);
             }
         } catch (SecurityException e) {
-            Log.v(TAG, "NO common API");
+            //Log.v(TAG, "NO common API");
         }
     }
 
@@ -58,7 +58,7 @@ public class Api extends AbstractMirrorLinkPlugin {
         PackageManager pm = activity.getPackageManager();
         List<ResolveInfo> resolveInfo = pm.queryIntentServices(commonAPIIntent, 0);
         if (resolveInfo == null || resolveInfo.size() != 1) {
-            Log.e(TAG, "Multiple CommonAPI services are available, one is likely not to be trusted!");
+           // Log.e(TAG, "Multiple CommonAPI services are available, one is likely not to be trusted!");
         }
         assert resolveInfo != null;
         ResolveInfo serviceInfo;

@@ -37,6 +37,11 @@ public class Display extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onDisplayConfigurationChanged".equals(action)) {
             callbackOnDisplayConfigurationChanged = callbackContext;
         }else if("onPixelFormatChanged".equals(action)){

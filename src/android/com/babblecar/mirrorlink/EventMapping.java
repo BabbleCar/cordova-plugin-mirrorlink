@@ -37,6 +37,11 @@ public class EventMapping extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onEventConfigurationChanged".equals(action)) {
             callbackOnEventConfiguration = callbackContext;
         }else if("onEventMappingChanged".equals(action)){

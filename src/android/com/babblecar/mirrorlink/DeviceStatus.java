@@ -47,6 +47,11 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onDriveModeChange".equals(action)) {
             callbackDriveMode = callbackContext;
         }else if("onNightModeChanged".equals(action)){

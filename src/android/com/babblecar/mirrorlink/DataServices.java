@@ -110,6 +110,12 @@ public class DataServices extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
+
+        if(!isconnected) {
+            callbackContext.error("service is not connected");
+            return false;
+        }
+
         if("onAvailableServicesChanged".equals(action)) {
             callbackOnAvailableServicesChanged = callbackContext;
         }else if("onRegisterForService".equals(action)){

@@ -15,7 +15,6 @@ import java.util.Set;
 
 abstract public class AbstractMirrorLinkPlugin extends CordovaPlugin {
     protected static volatile ICommonAPIService mCommonAPI = null;
-    protected static final String TAG = "mirrorBuse";
     protected static boolean isconnected = false;
     protected Activity activity = null;
 
