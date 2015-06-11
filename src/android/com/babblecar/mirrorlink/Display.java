@@ -15,8 +15,6 @@ public class Display extends AbstractMirrorLinkPlugin {
 
     private CallbackContext callbackOnDisplayConfigurationChanged = null;
     private CallbackContext callbackOnPixelFormatChanged = null;
-    private CallbackContext callbackGetClientPixelFormat = null;
-    private CallbackContext callbackGetDisplayConfiguration = null;
 
     private final IDisplayListener mDisplayListener = new IDisplayListener.Stub() {
         @Override
@@ -38,70 +36,40 @@ public class Display extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+
         if("onDisplayConfigurationChanged".equals(action)) {
             callbackOnDisplayConfigurationChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onPixelFormatChanged".equals(action)){
             callbackOnPixelFormatChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("getClientPixelFormat".equals(action)) {
-            callbackGetClientPixelFormat = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetClientPixelFormat.success(BundleToJSONObject(mDisplayManager.getClientPixelFormat()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(BundleToJSONObject(getDisplayManager().getClientPixelFormat()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("eventMappings".equals(action)) {
-            callbackGetDisplayConfiguration = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetDisplayConfiguration.success(BundleToJSONObject(mDisplayManager.getDisplayConfiguration()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(BundleToJSONObject(getDisplayManager().getDisplayConfiguration()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        return true;
     }
 
-    protected void execlocal() {
+    protected IDisplayManager getDisplayManager() {
         if (mDisplayManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDisplayManager = mCommonAPI.getDisplayManager(activity.getPackageName(), mDisplayListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mDisplayManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mDisplayManager = mCommonAPI.getDisplayManager(activity.getPackageName(), mDisplayListener);
+            } catch (RemoteException e) {
+                mDisplayManager = null;
             }
         }
+
+        return mDisplayManager;
     }
 }

@@ -14,10 +14,6 @@ public class DeviceInfo extends AbstractMirrorLinkPlugin {
     private volatile IDeviceInfoManager mDeviceInfoManager = null;
 
     private CallbackContext callbackOnDeviceInfoChanged = null;
-    private CallbackContext callbackGetMirrorLinkClientInformation = null;
-    private CallbackContext callbackGetServerVirtualKeyboardSupport = null;
-    private CallbackContext callbackGetMirrorLinkSessionVersionMajor = null;
-    private CallbackContext callbackGetMirrorLinkSessionVersionMinor = null;
 
     private final IDeviceInfoListener mDeviceInfoListener = new IDeviceInfoListener.Stub() {
         @Override
@@ -33,91 +29,47 @@ public class DeviceInfo extends AbstractMirrorLinkPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if("onDeviceInfoChanged".equals(action)) {
             callbackOnDeviceInfoChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("getMirrorLinkClientInformation".equals(action)) {
-            callbackGetMirrorLinkClientInformation = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetMirrorLinkClientInformation.success(BundleToJSONObject(mDeviceInfoManager.getMirrorLinkClientInformation()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getMirrorLinkClientInformation()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("getServerVirtualKeyboardSupport".equals(action)) {
-            callbackGetServerVirtualKeyboardSupport = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetServerVirtualKeyboardSupport.success(BundleToJSONObject(mDeviceInfoManager.getServerVirtualKeyboardSupport()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getServerVirtualKeyboardSupport()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("getMirrorLinkSessionVersionMajor".equals(action)) {
-            callbackGetMirrorLinkSessionVersionMajor = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetMirrorLinkSessionVersionMajor.success(mDeviceInfoManager.getMirrorLinkSessionVersionMajor());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(getDeviceInfoManager().getMirrorLinkSessionVersionMajor());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("getMirrorLinkSessionVersionMinor".equals(action)) {
-            callbackGetMirrorLinkSessionVersionMinor = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetMirrorLinkSessionVersionMinor.success(mDeviceInfoManager.getMirrorLinkSessionVersionMinor());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(getDeviceInfoManager().getMirrorLinkSessionVersionMinor());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        return true;
     }
 
-    protected void execlocal() {
+    protected IDeviceInfoManager getDeviceInfoManager() {
         if (mDeviceInfoManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDeviceInfoManager = mCommonAPI.getDeviceInfoManager(activity.getPackageName(), mDeviceInfoListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mDeviceInfoManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mDeviceInfoManager = mCommonAPI.getDeviceInfoManager(activity.getPackageName(), mDeviceInfoListener);
+            } catch (RemoteException e) {
+                mDeviceInfoManager = null;
             }
         }
+
+        return mDeviceInfoManager;
     }
 }

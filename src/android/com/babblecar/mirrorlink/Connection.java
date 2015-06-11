@@ -46,50 +46,40 @@ public class Connection extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        callbackLocal = null;
-
-        switch (action) {
-            case "onMirrorLinkSessionChanged":
-                callbackOnMirrorLinkSessionChanged = callbackContext;
-                break;
-            case "onAudioConnectionsChanged":
-                callbackOnAudioConnectionsChanged = callbackContext;
-                break;
-            case "onRemoteDisplayConnectionChanged":
-                callbackOnRemoteDisplayConnectionChanged = callbackContext;
-                break;
-            case "getAudioConnections":
-                try {
-                    callbackContext.success(BundleToJSONObject(getConnectionManager().getAudioConnections()));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "getRemoteDisplayConnections":
-                try {
-                    callbackContext.success(getConnectionManager().getRemoteDisplayConnections());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "isMirrorLinkSessionEstablished":
-                try {
-                    callbackContext.success(getConnectionManager().isMirrorLinkSessionEstablished() ? 1 : 0);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "unregister" :
-                try {
-                    getConnectionManager().unregister();
-                    callbackContext.success();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                callbackContext.error("AlertPlugin." + action + " not found !");
-                return false;
+        if("onMirrorLinkSessionChanged".equals(action)) {
+            callbackOnMirrorLinkSessionChanged = callbackContext;
+        } else if("onAudioConnectionsChanged".equals(action)){
+            callbackOnAudioConnectionsChanged = callbackContext;
+        } else if("onRemoteDisplayConnectionChanged".equals(action)){
+            callbackOnRemoteDisplayConnectionChanged = callbackContext;
+        } else if("getAudioConnections".equals(action)){
+            try {
+                callbackContext.success(BundleToJSONObject(getConnectionManager().getAudioConnections()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("getRemoteDisplayConnections".equals(action)){
+            try {
+                callbackContext.success(getConnectionManager().getRemoteDisplayConnections());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("isMirrorLinkSessionEstablished".equals(action)){
+            try {
+                callbackContext.success(getConnectionManager().isMirrorLinkSessionEstablished() ? 1 : 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("unregister".equals(action)){
+            try {
+                getConnectionManager().unregister();
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
         return true;

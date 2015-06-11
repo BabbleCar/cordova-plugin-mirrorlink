@@ -13,8 +13,6 @@ public class EventMapping extends AbstractMirrorLinkPlugin {
 
     private volatile IEventMappingManager mEventMappingManager = null;
 
-    private CallbackContext callbackEventConfiguration = null;
-    private CallbackContext callbackEventMapping = null;
     private CallbackContext callbackOnEventConfiguration = null;
     private CallbackContext callbackOnEventMapping = null;
 
@@ -38,71 +36,40 @@ public class EventMapping extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        callbackLocal = null;
 
-        switch (action) {
-            case "onEventConfigurationChanged" :
-                callbackOnEventConfiguration = callbackContext;
-                break;
-            case "onEventMappingChanged" :
-                callbackOnEventMapping = callbackContext;
-                break;
-            case "getEventConfiguration" :
-                callbackEventConfiguration = callbackContext;
-                callbackLocal = new MirrorLinkCallback()  {
-                    @Override
-                    public void callbackCall() {
-                        try {
-                            callbackEventConfiguration.success(String.valueOf(mEventMappingManager.getEventConfiguration()));
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                break;
-            case "getEventMappings" :
-                callbackEventMapping = callbackContext;
-                callbackLocal = new MirrorLinkCallback()  {
-                    @Override
-                    public void callbackCall() {
-                        try {
-                            callbackEventMapping.success(String.valueOf(mEventMappingManager.getEventMappings()));
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                break;
-            default:
-                callbackContext.error("AlertPlugin." + action + " not found !");
-                return false;
+        if("onEventConfigurationChanged".equals(action)) {
+            callbackOnEventConfiguration = callbackContext;
+        }else if("onEventMappingChanged".equals(action)){
+            callbackOnEventMapping = callbackContext;
+        }else if("getEventConfiguration".equals(action)){
+            try {
+                callbackContext.success(String.valueOf(getEventMappingManager().getEventConfiguration()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else if("getEventMappings".equals(action)){
+            try {
+                callbackContext.success(String.valueOf(getEventMappingManager().getEventMappings()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
-
-        execlocal();
 
         return true;
     }
 
-    protected void execlocal() {
+    protected IEventMappingManager getEventMappingManager() {
         if (mEventMappingManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mEventMappingManager = mCommonAPI.getEventMappingManager(activity.getPackageName(), mEventMappingListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mEventMappingManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mEventMappingManager = mCommonAPI.getEventMappingManager(activity.getPackageName(), mEventMappingListener);
+            } catch (RemoteException e) {
+                mEventMappingManager = null;
             }
         }
+
+        return mEventMappingManager;
     }
 }

@@ -21,10 +21,6 @@ public class DataServices extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackOnSubscribeResponse = null;
     private CallbackContext callbackOnSetDataObjectResponse = null;
     private CallbackContext callbackOnGetDataObjectResponse = null;
-    private CallbackContext callbackGetAvailableServices = null;
-    private CallbackContext callbackGetObject = null;
-    private CallbackContext callbackRegisterToService = null;
-    //private CallbackContext callbackSetObject = null;
 
     private final IDataServicesListener mDataServicesListener = new IDataServicesListener.Stub() {
         @Override
@@ -116,73 +112,34 @@ public class DataServices extends AbstractMirrorLinkPlugin {
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
         if("onAvailableServicesChanged".equals(action)) {
             callbackOnAvailableServicesChanged = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onRegisterForService".equals(action)){
             callbackOnRegisterForService = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onSubscribeResponse".equals(action)) {
             callbackOnSubscribeResponse = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onSetDataObjectResponse".equals(action)) {
             callbackOnSetDataObjectResponse = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onGetDataObjectResponse".equals(action)) {
             callbackOnGetDataObjectResponse = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("getAvailableServices".equals(action)) {
-            callbackGetAvailableServices = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackGetAvailableServices.success(ListBundleToJSONArray(mDataServicesManager.getAvailableServices()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(ListBundleToJSONArray(getDataServicesManager().getAvailableServices()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("getObject".equals(action)) {
-            callbackGetObject = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDataServicesManager.getObject(args.getInt(0), args.getInt(1));
-                        callbackGetObject.success();
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                getDataServicesManager().getObject(args.getInt(0), args.getInt(1));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            callbackContext.success();
         }else if("registerToService".equals(action)) {
-            callbackRegisterToService = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDataServicesManager.registerToService(args.getInt(0), args.getInt(1),args.getInt(2));
-                        callbackRegisterToService.success();
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                getDataServicesManager().registerToService(args.getInt(0), args.getInt(1), args.getInt(2));
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
         //TODO do setObject
         /*else if("setObject".equals(action)) {
@@ -245,30 +202,23 @@ public class DataServices extends AbstractMirrorLinkPlugin {
             return true;
         }*/
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
+        }
+
+        return true;
     }
 
-    protected void execlocal() {
+    protected IDataServicesManager getDataServicesManager() {
         if (mDataServicesManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDataServicesManager = mCommonAPI.getDataServicesManager(activity.getPackageName(), mDataServicesListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mDataServicesManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mDataServicesManager = mCommonAPI.getDataServicesManager(activity.getPackageName(), mDataServicesListener);
+            } catch (RemoteException e) {
+                mDataServicesManager = null;
             }
         }
+
+        return mDataServicesManager;
     }
 }

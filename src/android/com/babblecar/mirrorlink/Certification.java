@@ -26,44 +26,38 @@ public class Certification extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        callbackLocal = null;
-        switch (action) {
-            case "onCertificationStatusChanged" :
-                callbackOnCertificationStatusChanged = callbackContext;
-                break;
-            case "getApplicationCertificationInformation" :
-                String entity = args.getString(0);
-                try {
-                    callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationInformation(entity)));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "getApplicationCertificationStatus" :
-                try {
-                    callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationStatus()));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "getApplicationCertifyingEntities" :
-                try {
-                    callbackContext.success(getCertificationManager().getApplicationCertifyingEntities());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "unregister" :
-                try {
-                    getCertificationManager().unregister();
-                    callbackContext.success();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                callbackContext.error("AlertPlugin." + action + " not found !");
-                return false;
+
+        if("onCertificationStatusChanged".equals(action)) {
+            callbackOnCertificationStatusChanged = callbackContext;
+        } else if("getApplicationCertificationInformation".equals(action)){
+            String entity = args.getString(0);
+            try {
+                callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationInformation(entity)));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("getApplicationCertificationStatus".equals(action)){
+            try {
+                callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationStatus()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("getApplicationCertifyingEntities".equals(action)){
+            try {
+                callbackContext.success(getCertificationManager().getApplicationCertifyingEntities());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if("unregister".equals(action)) {
+            try {
+                getCertificationManager().unregister();
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
         return true;

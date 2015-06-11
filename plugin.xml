@@ -38,21 +38,40 @@
             <feature name="Connection" >
                 <param name="android-package" value="com.babblecar.mirrorlink.Connection"/>
             </feature>
+            <feature name="Context" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Context"/>
+            </feature>
+            <feature name="DataServices" >
+                <param name="android-package" value="com.babblecar.mirrorlink.DataServices"/>
+            </feature>
+            <feature name="DeviceInfo" >
+                <param name="android-package" value="com.babblecar.mirrorlink.DeviceInfo"/>
+            </feature>
             <feature name="DeviceStatus" >
                 <param name="android-package" value="com.babblecar.mirrorlink.DeviceStatus"/>
             </feature>
+            <feature name="Display" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Display"/>
+            </feature>
             <feature name="EventMapping" >
                 <param name="android-package" value="com.babblecar.mirrorlink.EventMapping"/>
+            </feature>
+            <feature name="Notification" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Notification"/>
             </feature>
         </config-file>
 
         <source-file src="src/android/com/babblecar/mirrorlink/Api.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/Certification.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/Connection.java" target-dir="src/com/babblecar/mirrorlink"/>
-        <source-file src="src/android/com/babblecar/mirrorlink/MirrorLinkCallback.java" target-dir="src/com/babblecar/mirrorlink"/>
-        <source-file src="src/android/com/babblecar/mirrorlink/AbstractMirrorLinkPlugin.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/Context.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/DataServices.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/DeviceInfo.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/DeviceStatus.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/Display.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/EventMapping.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/Notification.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/AbstractMirrorLinkPlugin.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/mirrorlink/android/commonapi/Defs.java" target-dir="src/com/mirrorlink/android/commonapi"/>
         <source-file src="src/android/com/mirrorlink/android/commonapi/ICertificationManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>
         <source-file src="src/android/com/mirrorlink/android/commonapi/IConnectionManager.aidl" target-dir="src/com/mirrorlink/android/commonapi"/>

@@ -1,16 +1,7 @@
 package com.babblecar.mirrorlink;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
 import com.mirrorlink.android.commonapi.ICommonAPIService;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -26,7 +17,6 @@ abstract public class AbstractMirrorLinkPlugin extends CordovaPlugin {
     protected static volatile ICommonAPIService mCommonAPI = null;
     protected static final String TAG = "mirrorBuse";
     protected static boolean isconnected = false;
-    protected MirrorLinkCallback callbackLocal;
     protected Activity activity = null;
 
     @Override

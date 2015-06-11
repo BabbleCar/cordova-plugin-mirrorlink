@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Context extends AbstractMirrorLinkPlugin {
 
@@ -64,61 +65,51 @@ public class Context extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        callbackLocal = null;
-
-        switch (action) {
-            case "onFramebufferBlocked" :
-                callbackOnFramebufferBlocked = callbackContext;
-                break;
-            case "onAudioBlocked" :
-                callbackOnAudioBlocked = callbackContext;
-                break;
-            case "onFramebufferUnblocked" :
-                callbackOnFramebufferUnblocked = callbackContext;
-                break;
-            case "onAudioUnblocked" :
-                callbackOnAudioUnblocked = callbackContext;
-                break;
-            case "setAudioContextInformation" :
-                try {
-                    Boolean AudioContent = args.getBoolean(0);
-                    JSONArray jAudioCategories =  args.getJSONArray(1);
-                    Boolean HandleBlocking = args.getBoolean(2);
-                    int audioCategories[] = new int[jAudioCategories.length()];
-                    for(int i = 0 ; i < jAudioCategories.length(); i++){
-                        audioCategories[i] = jAudioCategories.getInt(i);
-                    }
-                    getContextManager().setAudioContextInformation(AudioContent,audioCategories,HandleBlocking);
-                    callbackContext.success();
-                } catch (RemoteException | JSONException e) {
-                    e.printStackTrace();
+        if("onFramebufferBlocked".equals(action)) {
+            callbackOnFramebufferBlocked = callbackContext;
+        }else if("onAudioBlocked".equals(action)) {
+            callbackOnAudioBlocked = callbackContext;
+        }else if("onFramebufferUnblocked".equals(action)) {
+            callbackOnFramebufferUnblocked = callbackContext;
+        }else if("onAudioUnblocked".equals(action)) {
+            callbackOnAudioUnblocked = callbackContext;
+        }else if("setAudioContextInformation".equals(action)) {
+            try {
+                Boolean AudioContent = args.getBoolean(0);
+                JSONArray jAudioCategories =  args.getJSONArray(1);
+                Boolean HandleBlocking = args.getBoolean(2);
+                int audioCategories[] = new int[jAudioCategories.length()];
+                for(int i = 0 ; i < jAudioCategories.length(); i++){
+                    audioCategories[i] = jAudioCategories.getInt(i);
                 }
-                break;
-            case "setFramebufferContextInformation" :
-                try {
-                    //TODO jContent voir spéc pour setter
-                    //JSONObject jContent = args.getJSONObject(0);
-                    Boolean HandleBlocking = args.getBoolean(1);
+                getContextManager().setAudioContextInformation(AudioContent,audioCategories,HandleBlocking);
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else if("setFramebufferContextInformation".equals(action)) {
+            try {
+                //TODO jContent voir spéc pour setter
+                //JSONObject jContent = args.getJSONObject(0);
+                Boolean HandleBlocking = args.getBoolean(1);
 
-                    ArrayList<Bundle> content = new ArrayList<>();
-                    getContextManager().setFramebufferContextInformation(content, HandleBlocking);
+                List<Bundle> content = new ArrayList<Bundle>();
+                getContextManager().setFramebufferContextInformation(content, HandleBlocking);
 
-                    callbackContext.success();
-                } catch (RemoteException | JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case "unregister" :
-                try {
-                    getContextManager().unregister();
-                    callbackContext.success();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                callbackContext.error("AlertPlugin." + action + " not found !");
-                return false;
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else if("unregister".equals(action)) {
+            try {
+                getContextManager().unregister();
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
         return true;

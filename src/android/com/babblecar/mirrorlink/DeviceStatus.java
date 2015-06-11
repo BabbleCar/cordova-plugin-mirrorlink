@@ -5,6 +5,8 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.apache.cordova.CallbackContext;
+
+import com.mirrorlink.android.commonapi.IContextManager;
 import com.mirrorlink.android.commonapi.IDeviceStatusListener;
 import com.mirrorlink.android.commonapi.IDeviceStatusManager;
 
@@ -15,10 +17,6 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackDriveMode = null;
     private CallbackContext callbackNightMode = null;
     private CallbackContext callbackMicrophoneStatus = null;
-    private CallbackContext callbackIsInDriveMode = null;
-    private CallbackContext callbackIsInNightMode = null;
-    private CallbackContext callbackIsMicrophoneOn = null;
-    private CallbackContext callbackSetMicrophoneOpen = null;
 
     private final IDeviceStatusListener mDeviceStatusListener = new IDeviceStatusListener.Stub() {
         @Override
@@ -48,105 +46,54 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
     };
 
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
+
         if("onDriveModeChange".equals(action)) {
             callbackDriveMode = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onNightModeChanged".equals(action)){
             callbackNightMode = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("onMicrophoneStatusChanged".equals(action)){
             callbackMicrophoneStatus = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
         }else if("isInDriveMode".equals(action)) {
-            callbackIsInDriveMode = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackIsInDriveMode.success(String.valueOf(mDeviceStatusManager.isInDriveMode()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(String.valueOf(getDeviceStatusManager().isInDriveMode()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("isInNightMode".equals(action)) {
-            callbackIsInNightMode = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackIsInNightMode.success(String.valueOf(mDeviceStatusManager.isInNightMode()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(String.valueOf(getDeviceStatusManager().isInNightMode()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("isMicrophoneOn".equals(action)) {
-            callbackIsMicrophoneOn = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackIsMicrophoneOn.success(String.valueOf(mDeviceStatusManager.isMicrophoneOn()));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(String.valueOf(getDeviceStatusManager().isMicrophoneOn()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }else if("setMicrophoneOpen".equals(action)) {
-            callbackSetMicrophoneOpen = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        callbackSetMicrophoneOpen.success(String.valueOf(mDeviceStatusManager.setMicrophoneOpen(args.getBoolean(0), args.getBoolean(1))));
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
+            try {
+                callbackContext.success(String.valueOf(getDeviceStatusManager().setMicrophoneOpen(args.getBoolean(0), args.getBoolean(1))));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            callbackContext.error("AlertPlugin." + action + " not found !");
+            return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        return true;
     }
 
-    protected void execlocal() {
+    protected IDeviceStatusManager getDeviceStatusManager() {
         if (mDeviceStatusManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mDeviceStatusManager = mCommonAPI.getDeviceStatusManager(activity.getPackageName(), mDeviceStatusListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mDeviceStatusManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mDeviceStatusManager = mCommonAPI.getDeviceStatusManager(activity.getPackageName(), mDeviceStatusListener);
+            } catch (RemoteException e) {
+                mDeviceStatusManager = null;
             }
         }
+
+        return mDeviceStatusManager;
     }
 }
