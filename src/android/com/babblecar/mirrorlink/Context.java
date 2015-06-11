@@ -19,8 +19,6 @@ public class Context extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackOnAudioBlocked = null;
     private CallbackContext callbackOnFramebufferUnblocked = null;
     private CallbackContext callbackOnAudioUnblocked = null;
-    private CallbackContext callbackSetAudioContextInformation = null;
-    private CallbackContext callbackSetFramebufferContextInformation = null;
 
     private final IContextListener mContextListener = new IContextListener.Stub() {
         @Override
@@ -38,7 +36,6 @@ public class Context extends AbstractMirrorLinkPlugin {
                 callbackOnFramebufferBlocked.sendPluginResult(result);
             }
         }
-
         @Override
         public void onAudioBlocked(int reason) throws RemoteException {
             if(callbackOnAudioBlocked!=null) {
@@ -47,7 +44,6 @@ public class Context extends AbstractMirrorLinkPlugin {
                 callbackOnAudioBlocked.sendPluginResult(result);
             }
         }
-
         @Override
         public void onFramebufferUnblocked() throws RemoteException {
             if(callbackOnFramebufferUnblocked!=null) {
@@ -56,7 +52,6 @@ public class Context extends AbstractMirrorLinkPlugin {
                 callbackOnFramebufferUnblocked.sendPluginResult(result);
             }
         }
-
         @Override
         public void onAudioUnblocked() throws RemoteException {
             if(callbackOnAudioUnblocked!=null) {
@@ -69,97 +64,75 @@ public class Context extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if("onFramebufferBlocked".equals(action)) {
-            callbackOnFramebufferBlocked = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onAudioBlocked".equals(action)){
-            callbackOnAudioBlocked = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onFramebufferUnblocked".equals(action)){
-            callbackOnFramebufferUnblocked = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("onAudioUnblocked".equals(action)){
-            callbackOnAudioUnblocked = callbackContext;
-            callbackLocal = null;
-            execlocal();
-            return true;
-        }else if("setAudioContextInformation".equals(action)) {
-            callbackSetAudioContextInformation = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        Boolean AudioContent = args.getBoolean(0);
-                        JSONArray jAudioCategories =  args.getJSONArray(1);
-                        Boolean HandleBlocking = args.getBoolean(2);
-                        int audioCategories[] = new int[jAudioCategories.length()];
-                        for(int i = 0 ; i < jAudioCategories.length(); i++){
-                            audioCategories[i] = jAudioCategories.getInt(i);
-                        }
-                        mContextManager.setAudioContextInformation(AudioContent,audioCategories,HandleBlocking);
-                        callbackSetAudioContextInformation.success();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }else if("setFramebufferContextInformation".equals(action)) {
-            callbackSetFramebufferContextInformation = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        //TODO jContent voir spéc pour setter
-                        //JSONObject jContent = args.getJSONObject(0);
-                        Boolean HandleBlocking = args.getBoolean(1);
+        callbackLocal = null;
 
-                        ArrayList<Bundle> content = new ArrayList<>();
-                        mContextManager.setFramebufferContextInformation(content, HandleBlocking);
-
-                        callbackSetFramebufferContextInformation.success();
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
+        switch (action) {
+            case "onFramebufferBlocked" :
+                callbackOnFramebufferBlocked = callbackContext;
+                break;
+            case "onAudioBlocked" :
+                callbackOnAudioBlocked = callbackContext;
+                break;
+            case "onFramebufferUnblocked" :
+                callbackOnFramebufferUnblocked = callbackContext;
+                break;
+            case "onAudioUnblocked" :
+                callbackOnAudioUnblocked = callbackContext;
+                break;
+            case "setAudioContextInformation" :
+                try {
+                    Boolean AudioContent = args.getBoolean(0);
+                    JSONArray jAudioCategories =  args.getJSONArray(1);
+                    Boolean HandleBlocking = args.getBoolean(2);
+                    int audioCategories[] = new int[jAudioCategories.length()];
+                    for(int i = 0 ; i < jAudioCategories.length(); i++){
+                        audioCategories[i] = jAudioCategories.getInt(i);
                     }
+                    getContextManager().setAudioContextInformation(AudioContent,audioCategories,HandleBlocking);
+                    callbackContext.success();
+                } catch (RemoteException | JSONException e) {
+                    e.printStackTrace();
                 }
-            };
-            execlocal();
-            return true;
+                break;
+            case "setFramebufferContextInformation" :
+                try {
+                    //TODO jContent voir spéc pour setter
+                    //JSONObject jContent = args.getJSONObject(0);
+                    Boolean HandleBlocking = args.getBoolean(1);
+
+                    ArrayList<Bundle> content = new ArrayList<>();
+                    getContextManager().setFramebufferContextInformation(content, HandleBlocking);
+
+                    callbackContext.success();
+                } catch (RemoteException | JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "unregister" :
+                try {
+                    getContextManager().unregister();
+                    callbackContext.success();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                callbackContext.error("AlertPlugin." + action + " not found !");
+                return false;
         }
 
-        callbackContext.error("AlertPlugin." + action + " not found !");
-        return false;
+        return true;
     }
 
-    protected void execlocal() {
+    protected IContextManager getContextManager() {
         if (mContextManager == null) {
-            callbackBind = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        mContextManager = mCommonAPI.getContextManager(activity.getPackageName(), mContextListener);
-                        if(callbackLocal!=null) {
-                            callbackLocal.callbackCall();
-                        }
-                    } catch (RemoteException e) {
-                        mContextManager = null;
-                    }
-                }
-            };
-            exec();
-        } else {
-            if(callbackLocal!=null) {
-                callbackLocal.callbackCall();
+            try {
+                mContextManager = mCommonAPI.getContextManager(activity.getPackageName(), mContextListener);
+            } catch (RemoteException e) {
+                mContextManager = null;
             }
         }
+
+        return mContextManager;
     }
 }
