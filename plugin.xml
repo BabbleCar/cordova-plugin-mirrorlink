@@ -29,18 +29,25 @@
             </intent-filter>
         </config-file>
         <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Api" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Api"/>
+            </feature>
+            <feature name="Certification" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Certification"/>
+            </feature>
+            <feature name="Connection" >
+                <param name="android-package" value="com.babblecar.mirrorlink.Connection"/>
+            </feature>
             <feature name="DeviceStatus" >
                 <param name="android-package" value="com.babblecar.mirrorlink.DeviceStatus"/>
             </feature>
             <feature name="EventMapping" >
                 <param name="android-package" value="com.babblecar.mirrorlink.EventMapping"/>
             </feature>
-            <feature name="Connection" >
-                <param name="android-package" value="com.babblecar.mirrorlink.Connection"/>
-            </feature>
         </config-file>
 
-
+        <source-file src="src/android/com/babblecar/mirrorlink/Api.java" target-dir="src/com/babblecar/mirrorlink"/>
+        <source-file src="src/android/com/babblecar/mirrorlink/Certification.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/Connection.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/MirrorLinkCallback.java" target-dir="src/com/babblecar/mirrorlink"/>
         <source-file src="src/android/com/babblecar/mirrorlink/AbstractMirrorLinkPlugin.java" target-dir="src/com/babblecar/mirrorlink"/>
