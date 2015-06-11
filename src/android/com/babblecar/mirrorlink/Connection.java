@@ -53,10 +53,13 @@ public class Connection extends AbstractMirrorLinkPlugin {
 
         if("onMirrorLinkSessionChanged".equals(action)) {
             callbackOnMirrorLinkSessionChanged = callbackContext;
+            getConnectionManager();
         } else if("onAudioConnectionsChanged".equals(action)){
             callbackOnAudioConnectionsChanged = callbackContext;
+            getConnectionManager();
         } else if("onRemoteDisplayConnectionChanged".equals(action)){
             callbackOnRemoteDisplayConnectionChanged = callbackContext;
+            getConnectionManager();
         } else if("getAudioConnections".equals(action)){
             try {
                 callbackContext.success(BundleToJSONObject(getConnectionManager().getAudioConnections()));

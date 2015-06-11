@@ -72,12 +72,16 @@ public class Context extends AbstractMirrorLinkPlugin {
 
         if("onFramebufferBlocked".equals(action)) {
             callbackOnFramebufferBlocked = callbackContext;
+            getContextManager();
         }else if("onAudioBlocked".equals(action)) {
             callbackOnAudioBlocked = callbackContext;
+            getContextManager();
         }else if("onFramebufferUnblocked".equals(action)) {
             callbackOnFramebufferUnblocked = callbackContext;
+            getContextManager();
         }else if("onAudioUnblocked".equals(action)) {
             callbackOnAudioUnblocked = callbackContext;
+            getContextManager();
         }else if("setAudioContextInformation".equals(action)) {
             try {
                 Boolean AudioContent = args.getBoolean(0);

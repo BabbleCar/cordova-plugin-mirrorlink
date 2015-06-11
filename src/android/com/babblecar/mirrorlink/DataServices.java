@@ -118,14 +118,19 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
         if("onAvailableServicesChanged".equals(action)) {
             callbackOnAvailableServicesChanged = callbackContext;
+            getDataServicesManager();
         }else if("onRegisterForService".equals(action)){
             callbackOnRegisterForService = callbackContext;
+            getDataServicesManager();
         }else if("onSubscribeResponse".equals(action)) {
             callbackOnSubscribeResponse = callbackContext;
+            getDataServicesManager();
         }else if("onSetDataObjectResponse".equals(action)) {
             callbackOnSetDataObjectResponse = callbackContext;
+            getDataServicesManager();
         }else if("onGetDataObjectResponse".equals(action)) {
             callbackOnGetDataObjectResponse = callbackContext;
+            getDataServicesManager();
         }else if("getAvailableServices".equals(action)) {
             try {
                 callbackContext.success(ListBundleToJSONArray(getDataServicesManager().getAvailableServices()));

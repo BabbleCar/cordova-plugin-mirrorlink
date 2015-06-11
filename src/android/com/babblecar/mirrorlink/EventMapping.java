@@ -44,8 +44,10 @@ public class EventMapping extends AbstractMirrorLinkPlugin {
 
         if("onEventConfigurationChanged".equals(action)) {
             callbackOnEventConfiguration = callbackContext;
+            getEventMappingManager();
         }else if("onEventMappingChanged".equals(action)){
             callbackOnEventMapping = callbackContext;
+            getEventMappingManager();
         }else if("getEventConfiguration".equals(action)){
             try {
                 callbackContext.success(String.valueOf(getEventMappingManager().getEventConfiguration()));

@@ -63,13 +63,16 @@ public class Notification extends AbstractMirrorLinkPlugin {
             callbackContext.error("service is not connected");
             return false;
         }
-        
+
         if("onNotificationEnabledChanged".equals(action)) {
             callbackOnNotificationEnabledChanged = callbackContext;
+            getNotificationManager();
         }else if("onNotificationConfigurationChanged".equals(action)){
             callbackOnNotificationConfigurationChanged = callbackContext;
+            getNotificationManager();
         }else if("onNotificationActionReceived".equals(action)){
             callbackOnNotificationActionReceived = callbackContext;
+            getNotificationManager();
         }else if("getNotificationConfiguration".equals(action)){
             try {
                 callbackContext.success(String.valueOf(getNotificationManager().getNotificationConfiguration()));

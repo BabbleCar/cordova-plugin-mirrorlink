@@ -35,6 +35,7 @@ public class DeviceInfo extends AbstractMirrorLinkPlugin {
 
         if("onDeviceInfoChanged".equals(action)) {
             callbackOnDeviceInfoChanged = callbackContext;
+            getDeviceInfoManager();
         }else if("getMirrorLinkClientInformation".equals(action)) {
             try {
                 callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getMirrorLinkClientInformation()));

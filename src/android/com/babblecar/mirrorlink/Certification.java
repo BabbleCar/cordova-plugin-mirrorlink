@@ -34,6 +34,7 @@ public class Certification extends AbstractMirrorLinkPlugin {
 
         if("onCertificationStatusChanged".equals(action)) {
             callbackOnCertificationStatusChanged = callbackContext;
+            getCertificationManager();
         } else if("getApplicationCertificationInformation".equals(action)){
             String entity = args.getString(0);
             try {
