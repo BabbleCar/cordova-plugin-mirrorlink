@@ -44,8 +44,10 @@ public class Display extends AbstractMirrorLinkPlugin {
 
         if("onDisplayConfigurationChanged".equals(action)) {
             callbackOnDisplayConfigurationChanged = callbackContext;
+            getDisplayManager();
         }else if("onPixelFormatChanged".equals(action)){
             callbackOnPixelFormatChanged = callbackContext;
+            getDisplayManager();
         }else if("getClientPixelFormat".equals(action)) {
             try {
                 callbackContext.success(BundleToJSONObject(getDisplayManager().getClientPixelFormat()));

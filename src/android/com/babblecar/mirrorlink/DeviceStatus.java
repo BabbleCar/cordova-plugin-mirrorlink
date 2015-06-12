@@ -54,10 +54,13 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
 
         if("onDriveModeChange".equals(action)) {
             callbackDriveMode = callbackContext;
+            getDeviceStatusManager();
         }else if("onNightModeChanged".equals(action)){
             callbackNightMode = callbackContext;
+            getDeviceStatusManager();
         }else if("onMicrophoneStatusChanged".equals(action)){
             callbackMicrophoneStatus = callbackContext;
+            getDeviceStatusManager();
         }else if("isInDriveMode".equals(action)) {
             try {
                 callbackContext.success(String.valueOf(getDeviceStatusManager().isInDriveMode()));
