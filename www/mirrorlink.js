@@ -267,11 +267,18 @@ mirrorlink.connection.onSessionChanged = function( callback, err ){
  * @param {function} callback . Executed when manager successfully disabled.
  * @param {function} err . Executed if mirrorlink failed to disabled connection manager.
  */
-mirrorlink.certification.disable = function(callback, err){
+mirrorlink.connection.disable = function(callback, err){
     if( typeof callback === 'function' && typeof err === 'function' ){
         cordova.exec(callback, err, 'Connection', 'unregister', []);
     }
 };
+
+//-------- CONTEXT SERVICE -----------//
+
+
+
+
+
 
 
 
