@@ -51,33 +51,39 @@ public class Connection extends AbstractMirrorLinkPlugin {
             return false;
         }
 
-        if("onMirrorLinkSessionChanged".equals(action)) {
+        //4.4.1 return bool
+        if("isMirrorLinkSessionEstablished".equals(action)){
+            try {
+                callbackContext.success(getConnectionManager().isMirrorLinkSessionEstablished() ? 1 : 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        //4.4.2 return bool
+        } else if("onMirrorLinkSessionChanged".equals(action)) {
             callbackOnMirrorLinkSessionChanged = callbackContext;
             getConnectionManager();
-        } else if("onAudioConnectionsChanged".equals(action)){
-            callbackOnAudioConnectionsChanged = callbackContext;
-            getConnectionManager();
-        } else if("onRemoteDisplayConnectionChanged".equals(action)){
-            callbackOnRemoteDisplayConnectionChanged = callbackContext;
-            getConnectionManager();
+        //4.4.3 return bundle
         } else if("getAudioConnections".equals(action)){
             try {
                 callbackContext.success(BundleToJSONObject(getConnectionManager().getAudioConnections()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+        //4.4.4 return bundle
+        } else if("onAudioConnectionsChanged".equals(action)){
+            callbackOnAudioConnectionsChanged = callbackContext;
+            getConnectionManager();
+        //4.4.5 return int
         } else if("getRemoteDisplayConnections".equals(action)){
             try {
                 callbackContext.success(getConnectionManager().getRemoteDisplayConnections());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        } else if("isMirrorLinkSessionEstablished".equals(action)){
-            try {
-                callbackContext.success(getConnectionManager().isMirrorLinkSessionEstablished() ? 1 : 0);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+        // 4.4.6 return int
+        } else if("onRemoteDisplayConnectionChanged".equals(action)){
+            callbackOnRemoteDisplayConnectionChanged = callbackContext;
+            getConnectionManager();
         } else if("unregister".equals(action)){
             try {
                 getConnectionManager().unregister();

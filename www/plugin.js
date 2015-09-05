@@ -76,32 +76,29 @@ var mirrolink = {
     },
     Connection : {
         /**
-         * 4.4.4 Established Audio Connections Callback.
+         * 4.4.1 Indicates whether a MirrorLink session is currently established.
          *
          * <br>
-         * <i>Function reference 0x0304.</i>
+         * <i>Function reference 0x0301.</i>
          * <br>
-         * Indicate that the audio connections changed.
-         *
-         * @param audioConnections Bundle containing the status of the audio connections available. The
-         * details of the fields available are found in {@link Defs.AudioConnections}.
+         * A MirrorLink is considered established if a ClientProfile has been
+         * set on the MirrorLink Server for the current tethering session.
          */
-        onAudioConnectionsChanged : function (success, fail) {
-            cordova.exec(success, fail, 'Connection', 'onAudioConnectionsChanged', []);
+        isMirrorLinkSessionEstablished : function (success, fail) {
+            cordova.exec(success, fail, 'Connection', 'isMirrorLinkSessionEstablished', []);
         },
         /**
-         * 4.4.6 Established Remote Display Connection Callback.
+         * 4.4.2 Established MirrorLink Session Callback.
          *
          * <br>
-         * <i>Function reference 0x0306.</i>
+         * <i>Function reference 0x0302.</i>
          * <br>
-         * Indicate that the remote display connections changed.
+         * Indicate that the MirrorLink Session status has changed.
          *
-         * @param remoteDisplayConnection integer indicating the status of the remote display connections
-         * available. The values are defined in {@link Defs.RemoteDisplayConnection}.
+         * @param mirrolinkSessionIsEstablished the new status of the MirrorLink session.
          */
-        onRemoteDisplayConnectionChanged : function (success, fail) {
-            cordova.exec(success, fail, 'Connection', 'onRemoteDisplayConnectionChanged', []);
+        onMirrorLinkSessionChanged : function (success, fail) {
+            cordova.exec(success, fail, 'Connection', 'onMirrorLinkSessionChanged', []);
         },
         /**
          * 4.4.3 Established Audio Connections.
@@ -118,6 +115,20 @@ var mirrolink = {
             cordova.exec(success, fail, 'Connection', 'getAudioConnections', []);
         },
         /**
+         * 4.4.4 Established Audio Connections Callback.
+         *
+         * <br>
+         * <i>Function reference 0x0304.</i>
+         * <br>
+         * Indicate that the audio connections changed.
+         *
+         * @param audioConnections Bundle containing the status of the audio connections available. The
+         * details of the fields available are found in {@link Defs.AudioConnections}.
+         */
+        onAudioConnectionsChanged : function (success, fail) {
+            cordova.exec(success, fail, 'Connection', 'onAudioConnectionsChanged', []);
+        },
+        /**
          * 4.4.5 Established Remote Display Connection.
          *
          * <br>
@@ -132,44 +143,19 @@ var mirrolink = {
             cordova.exec(success, fail, 'Connection', 'getRemoteDisplayConnections', []);
         },
         /**
-         * 4.4.1 Indicates whether a MirrorLink session is currently established.
+         * 4.4.6 Established Remote Display Connection Callback.
          *
          * <br>
-         * <i>Function reference 0x0301.</i>
+         * <i>Function reference 0x0306.</i>
          * <br>
-         * A MirrorLink is considered established if a ClientProfile has been
-         * set on the MirrorLink Server for the current tethering session.
-         * <br>
-         * The application MUST use this call and its equivalent callback {@link
-         * IConnectionListener#onMirrorLinkSessionChanged} to determine whether a
-         * MirrorLink session is established. MirrorLink applications SHOULD use
-         * other Common API modules only while a MirrorLink Session is running.
-         * MirrorLink Servers MUST have the Common API modules available at all
-         * times.
+         * Indicate that the remote display connections changed.
+         *
+         * @param remoteDisplayConnection integer indicating the status of the remote display connections
+         * available. The values are defined in {@link Defs.RemoteDisplayConnection}.
          */
-        isMirrorLinkSessionEstablished : function (success, fail) {
-            cordova.exec(success, fail, 'Connection', 'isMirrorLinkSessionEstablished', []);
+        onRemoteDisplayConnectionChanged : function (success, fail) {
+            cordova.exec(success, fail, 'Connection', 'onRemoteDisplayConnectionChanged', []);
         },
-        /**
-         * 4.4.2 Established MirrorLink Session Callback.
-         *
-         * <br>
-         * <i>Function reference 0x0302.</i>
-         * <br>
-         * Indicate that the MirrorLink Session status has changed.
-         * <br>
-         * The application MUST use this call and its equivalent callback {@link
-         * IConnectionManager#isMirrorLinkSessionEstablished} to determine whether a
-         * MirrorLink session is established. MirrorLink applications SHOULD use
-         * other Common API modules only while a MirrorLink Session is running.
-         * MirrorLink Servers MUST have the Common API modules available at all
-         * times.
-         *
-         * @param mirrolinkSessionIsEstablished the new status of the MirrorLink session.
-         */
-        onMirrorLinkSessionChanged : function (success, fail) {
-            cordova.exec(success, fail, 'Connection', 'onMirrorLinkSessionChanged', []);
-        }
         /**
          * Notifies the Manager that the application is not using it anymore.
          * <br>
