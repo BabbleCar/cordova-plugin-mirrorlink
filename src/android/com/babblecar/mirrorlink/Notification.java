@@ -99,15 +99,12 @@ public class Notification extends AbstractMirrorLinkPlugin {
             }
         }else if("sendClientNotification".equals(action)){
             try {
-                List<Bundle> actions = new ArrayList<Bundle>();
+                List<String> actions = new ArrayList<String>();
                 JSONArray jo = args.getJSONArray(3);
                 for (int i=0;i<jo.length();i++) {
                     //TODO  Check action with array relational (for json object)
-                    Bundle act =  new Bundle();
-                    act.putInt(Defs.Action.ACTION_ID, i + 1);
-                    //action.putString(Defs.Action.ICON_URL, i+1);
-                    act.putString(Defs.Action.ACTION_NAME, jo.getString(i));
-                    act.putBoolean(Defs.Action.LAUNCH_APP, false);
+                    String act =  new String();
+                    act = jo.getString(i);
                     actions.add(act);
                 }
                 callbackContext.success(String.valueOf(getNotificationManager().sendClientNotification(args.getString(0), args.getString(1), Uri.parse(args.getString(2)), actions)));
