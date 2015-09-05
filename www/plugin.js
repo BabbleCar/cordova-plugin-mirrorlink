@@ -18,23 +18,6 @@ var mirrolink = {
             cordova.exec(success, fail, 'Certification', 'onCertificationStatusChanged', []);
         },
         /**
-         * 4.3.3 Get Application Certification Information.
-         *
-         * <br>
-         * <i>Function reference 0x0203.</i>
-         * <br>
-         * Provide application certificate information.
-         *
-         * @param   entity the name of the certifying entity,
-         *
-         * @return  Bundle containing {@link Defs.CertificateInformation} for the given entity
-         *          or null if the application isn't certified or the entity is not part of the list of
-         *          certifying entities for the application,
-         */
-        getApplicationCertificationInformation : function(entity, success, fail) {
-            cordova.exec(success, fail, 'Certification', 'getApplicationCertificationInformation', [entity]);
-        },
-        /**
          * 4.3.1 Get Application Certification Status.
          *
          * <br>
@@ -59,6 +42,23 @@ var mirrolink = {
          */
         getApplicationCertifyingEntities : function(success, fail) {
             cordova.exec(success, fail, 'Certification', 'getApplicationCertifyingEntities', []);
+        },
+        /**
+         * 4.3.3 Get Application Certification Information.
+         *
+         * <br>
+         * <i>Function reference 0x0203.</i>
+         * <br>
+         * Provide application certificate information.
+         *
+         * @param   entity the name of the certifying entity,
+         *
+         * @return  Bundle containing {@link Defs.CertificateInformation} for the given entity
+         *          or null if the application isn't certified or the entity is not part of the list of
+         *          certifying entities for the application,
+         */
+        getApplicationCertificationInformation : function(entity, success, fail) {
+            cordova.exec(success, fail, 'Certification', 'getApplicationCertificationInformation', [entity]);
         },
         /**
          * Notifies the Manager that the application is not using it anymore.

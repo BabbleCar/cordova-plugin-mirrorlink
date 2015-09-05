@@ -35,6 +35,21 @@ public class Certification extends AbstractMirrorLinkPlugin {
         if("onCertificationStatusChanged".equals(action)) {
             callbackOnCertificationStatusChanged = callbackContext;
             getCertificationManager();
+        //4.3.1 return bundle
+        } else if("getApplicationCertificationStatus".equals(action)){
+            try {
+                callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationStatus()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        //4.3.2 return string
+        } else if("getApplicationCertifyingEntities".equals(action)){
+            try {
+                callbackContext.success(getCertificationManager().getApplicationCertifyingEntities());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        //4.3.3 return bundle
         } else if("getApplicationCertificationInformation".equals(action)){
             String entity = args.getString(0);
             try {
@@ -42,19 +57,7 @@ public class Certification extends AbstractMirrorLinkPlugin {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        } else if("getApplicationCertificationStatus".equals(action)){
-            try {
-                callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationStatus()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        } else if("getApplicationCertifyingEntities".equals(action)){
-            try {
-                callbackContext.success(getCertificationManager().getApplicationCertifyingEntities());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        } else if("unregister".equals(action)) {
+        }  else if("unregister".equals(action)) {
             try {
                 getCertificationManager().unregister();
                 callbackContext.success();

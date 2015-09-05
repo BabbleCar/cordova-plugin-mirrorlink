@@ -3,7 +3,6 @@ package com.babblecar.mirrorlink;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
-import com.mirrorlink.android.commonapi.Defs;
 import com.mirrorlink.android.commonapi.INotificationListener;
 import com.mirrorlink.android.commonapi.INotificationManager;
 import org.apache.cordova.CallbackContext;
@@ -102,8 +101,7 @@ public class Notification extends AbstractMirrorLinkPlugin {
                 List<String> actions = new ArrayList<String>();
                 JSONArray jo = args.getJSONArray(3);
                 for (int i=0;i<jo.length();i++) {
-                    //TODO  Check action with array relational (for json object)
-                    String act =  new String();
+                    String act;
                     act = jo.getString(i);
                     actions.add(act);
                 }
