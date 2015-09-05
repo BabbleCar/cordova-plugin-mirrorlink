@@ -144,39 +144,23 @@ public class Defs {
      */
     public static final class Action {
         /**
-         * Action identifier. MUST be non-zero. The actionIDs MUST be unique within one
-         * notification. Otherwise the MirrorLink Server will reject the notification.
-         * <br>
-         * uint16 packaged as int
+         * Action identifier.
+         * uint16 packaged as an int
          */
         public static final String ACTION_ID = "ACTION_ID";
         /**
          * Action name.
-         * <br>
          * String
          */
         public static final String ACTION_NAME = "ACTION_NAME";
         /**
-         * Flag whether to launch the application.
-         * <br>
-         * Optional. By default it is considered as false.
-         * <br>
+         * Flag whether to launch the app.
          * boolean
          */
         public static final String LAUNCH_APP = "LAUNCH_APP";
         /**
-         * The URL to the icon associated with the action.
-         * <br>
-         * Optional. By default no icon will be used.
-         * <br>
-         * If defined it specifies the name of the resource where the icon is stored. If the Server
-         * fails to find the resource, then it SHOULD provide the notification to the Client without
-         * an icon.
-         * <br>
-         * It is up to the Server to provide the icon within the format and size negotiated with the
-         * MirrorLink Client.
-         * <br>
-         * String
+         * URL to the con associated with the action.
+         * url packaged as a String
          */
         public static final String ICON_URL = "ICON_URL";
     }
@@ -505,22 +489,22 @@ public class Defs {
     public static final class EventConfiguration {
         /**
          * The keyboard layout language code (according to ISO 639-1).
-         * String (two-characters, e.g. 'en')
+         * uint16 packaged as int
          */
         public static final String KEYBOARD_LANGUAGE = "KEYBOARD_LANGUAGE";
         /**
          * The keyboard layout country code (according to ISO 3166-1 aplha-2).
-         * String (two-characters, e.g. 'us')
+         * uint16 packaged as int
          */
         public static final String KEYBOARD_COUNTRY = "KEYBOARD_COUNTRY";
         /**
          * The UI language code (according to ISO 639-1).
-         * String (two-characters, e.g. 'en')
+         * uint16 packaged as int
          */
         public static final String UI_LANGUAGE = "UI_LANGUAGE";
         /**
          * The UI language country code (according to ISO 3166-1 aplha-2).
-         * String (two-characters, e.g. 'us')
+         * uint16 packaged as int
          */
         public static final String UI_COUNTRY = "UI_COUNTRY";
         /**
@@ -905,119 +889,53 @@ public class Defs {
     }
 
     /**
-     * Defines the type of information that can be contained in a Bundle which represents an Object
+     * Defines the type of information that can be contained in a Bundle which represents an object
      * passed in {@link IDataServicesManager} calls.
      * <br>
-     * To give a few examples of how an Object can be packaged as a Bundle, consider the following:
+     * To give an example of how an Object can be packaged as a Bundle, consider the following
+     * example:
      * <br>
      * <pre>
-     * &#47;** @UID: 0xD6804B4A @max_subscription_rate: 50Hz *&#47;
-     * Object accelerometer {
-     *    STRUCTURE accel_data {
-     *      FLOAT x; &#47;&#47;&#47; @UID: 0x150A2CB3
-     *      FLOAT y; &#47;&#47;&#47; @UID: 0x150A2CB4
-     *      LONG time; &#47;&#47;&#47; @UID: 0x00A0FDB2
-     *    }
-     *    STRUCTURE_ARRAY<accel_data> data; &#47;&#47;&#47; @UID 0x144A776F
+     * STRUCTURE {
+     *    FLOAT x; /// @UID: 0x52 @value: 1.5
+     *    ARRAY<LONG> y; /// @UID: 0x13 @count: 3 @value {3; 2; 1}
      * }
      * </pre>
-     * Will be packaged as:
+     * This will be packaged as:
      * <br>
      * <pre>
      * Bundle {
      *     TYPE: STRUCTURE
-     *     UID: 0xD6804B4A
-     *     0x144A776F: Bundle {
+     *     0x51: Bundle {
+     *         TYPE: FLOAT
+     *         VALUE: 1.5
+     *     }
+     *     0x13: Bundle {
      *         TYPE: ARRAY
-     *         UID: 0x144A776F &#47; the UID is optional here
-     *         COUNT: 2
+     *         COUNT: 3
      *         0: Bundle {
-     *             TYPE: STRUCTURE
-     *             0x150A2CB3: Bundle {
-     *               TYPE: FLOAT
-     *               VALUE: 1.5
-     *             }
-     *             0x150A2CB4: Bundle {
-     *               TYPE: FLOAT
-     *               VALUE: 2.5
-     *             }
-     *             0x00A0FDB2: Bundle {
-     *               TYPE: LONG
-     *               VALUE: 5023934
-     *             }
+     *             TYPE: LONG
+     *             VALUE: 3
      *         }
      *         1: Bundle {
-     *             TYPE: STRUCTURE
-     *             0x150A2CB3: Bundle {
-     *               TYPE: FLOAT
-     *               VALUE: 4.2
-     *             }
-     *             0x150A2CB4: Bundle {
-     *               TYPE: FLOAT
-     *               VALUE: 2.5
-     *             }
-     *             0x00A0FDB2: Bundle {
-     *               TYPE: LONG
-     *               VALUE: 5024134
-     *             }
+     *             TYPE: LONG
+     *             VALUE: 2
+     *         }
+     *         2: Bundle {
+     *             TYPE: LONG
+     *             VALUE: 1
      *         }
      *     }
      * }
      * </pre>
-     * <br>
-     * <pre>
-     * &#47;** @UID: 0xD73DFF88 @writable @control: accelerometer *&#47;
-     * Object accelerometer {
-     *    BOOLEAN filterEnabled; &#47;&#47;&#47; @UID: 0x2B230C64
-     *    INT samplingRate; &#47;&#47;&#47; @UID: 0x5F2BF0EC
-     * }
-     * </pre>
-     * Will be packaged as:
-     * <br>
-     * <pre>
-     * Bundle {
-     *     TYPE: STRUCTURE
-     *     UID: 0xD73DFF88
-     *     0x2B230C64: Bundle {
-     *         TYPE: BOOLEAN
-     *         VALUE: false
-     *     }
-     *     0x5F2BF0EC: Bundle {
-     *         TYPE: INT
-     *         VALUE: 20
-     *     }
-     * }
-     * </pre>
-     * To summarise:
-     * <ul>
-     *  <li>the Object is a Bundle.</li>
-     *  <li>each Bundle can have any of the defined types.</li>
-     *  <li>the Bundle for the Object must contain a UID field.</li>
-     *  <li>the Bundle of STRUCTURE type contains other Bundles. The UIDs of the elemts are the keys
-     *  for accessing each inner Bundle.</li>
-     *  <li>the inner Bundles can in their turn have any of the defined type.</li>
-     *  <li>the Bundle of ARRAY type has a COUNT integer key and keys from 0 to COUNT-1, which are in
-     *  turn Bundles.</li>
-     *  <li>only Bundles of simple types (not STRUCTURE, or ARRAY) have a VALUE key.</li>
-     *  <li>the Object (which is the root Bundle) may be of a simple type.</li>
-     * </ul>
      */
     public static final class DataObjectKeys {
-        /** The name of the key that has the type of the object.
-         *  int
-         * */
-        public static final String TYPE = "TYPE";
-        /** The name of the key that has the UID of the element. This is mandatory only for the root
-         *  Bundle, which representes the whole objects, but other elements may have it as well.
-         *  int
-         * */
-        public static final String UID = "UID";
+        /** The name of the key that has the type of the object. */
+        public static final String KEY_NAME = "TYPE";
         /** The name of the key that has the value of the object. */
         public static final String VALUE = "VALUE";
         /** The name of the key where the count of the elements in the array is stored. This will
-         * only be found in a Bundle of type {@link #ARRAY_TYPE}.
-         * int
-         * */
+         * only be found in a Bundle of type {@link #ARRAY_TYPE}. */
         public static final String COUNT = "COUNT";
 
         /** The bundle represents a BOOLEAN value. Use getBoolean/pubBoolean to access the value in

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 import com.mirrorlink.android.commonapi.ICommonAPIService;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
@@ -21,6 +20,7 @@ public class Api extends AbstractMirrorLinkPlugin {
         if("connect".equals(action)) {
             callbackBind = callbackContext;
             connect();
+
             return true;
         }
 
@@ -28,28 +28,25 @@ public class Api extends AbstractMirrorLinkPlugin {
     }
 
     private void connect() {
-        try {
-            Intent intent = findCommonAPIIntent();
-            if (intent != null) {
-                activity.bindService(intent, new ServiceConnection() {
-                    public void onServiceDisconnected(ComponentName name) {
+        Intent intent = findCommonAPIIntent();
+        if (intent != null) {
+            activity.bindService(intent, new ServiceConnection() {
+                public void onServiceDisconnected(ComponentName name) {
+                    mCommonAPI = null;
+                    isconnected=false;
+                }
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    isconnected=true;
+                    mCommonAPI = ICommonAPIService.Stub.asInterface(service);
+                    try {
+                        mCommonAPI.applicationStarted(activity.getPackageName(), mCommonAPI.getCommonAPIServiceApiLevel());
+                        callbackBind.success();
+                    } catch (RemoteException e) {
                         mCommonAPI = null;
                         isconnected=false;
                     }
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        isconnected=true;
-                        mCommonAPI = ICommonAPIService.Stub.asInterface(service);
-                        try {
-                            mCommonAPI.applicationStarted(activity.getPackageName(), mCommonAPI.getCommonAPIServiceApiLevel());
-                            callbackBind.success();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, Context.BIND_AUTO_CREATE);
-            }
-        } catch (SecurityException e) {
-            //Log.v(TAG, "NO common API");
+                }
+            }, Context.BIND_AUTO_CREATE);
         }
     }
 
@@ -67,6 +64,7 @@ public class Api extends AbstractMirrorLinkPlugin {
         String className = serviceInfo.serviceInfo.name;
         ComponentName component = new ComponentName(packageName, className);
         commonAPIIntent.setComponent(component);
+
         return commonAPIIntent;
     }
 }

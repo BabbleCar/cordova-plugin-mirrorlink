@@ -32,13 +32,6 @@ oneway interface IConnectionListener {
      * <i>Function reference 0x0302.</i>
      * <br>
      * Indicate that the MirrorLink Session status has changed.
-     * <br>
-     * The application MUST use this call and its equivalent callback {@link
-     * IConnectionManager#isMirrorLinkSessionEstablished} to determine whether a
-     * MirrorLink session is established. MirrorLink applications SHOULD use
-     * other Common API modules only while a MirrorLink Session is running.
-     * MirrorLink Servers MUST have the Common API modules available at all
-     * times.
      *
      * @param mirrolinkSessionIsEstablished the new status of the MirrorLink session.
      */

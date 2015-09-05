@@ -40,13 +40,6 @@ interface IConnectionManager {
      * <br>
      * A MirrorLink is considered established if a ClientProfile has been
      * set on the MirrorLink Server for the current tethering session.
-     * <br>
-     * The application MUST use this call and its equivalent callback {@link
-     * IConnectionListener#onMirrorLinkSessionChanged} to determine whether a
-     * MirrorLink session is established. MirrorLink applications SHOULD use
-     * other Common API modules only while a MirrorLink Session is running.
-     * MirrorLink Servers MUST have the Common API modules available at all
-     * times.
      */
     boolean isMirrorLinkSessionEstablished();
 
@@ -86,5 +79,5 @@ interface IConnectionManager {
      * Once unregister is received by the server, the application will not receive any more
      * callbacks from the Manager.
      */
-    oneway void unregister();
+    void unregister();
 }

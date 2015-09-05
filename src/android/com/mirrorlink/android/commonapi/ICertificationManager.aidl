@@ -80,5 +80,5 @@ interface ICertificationManager {
      * Once unregister is received by the server, the application will not receive any more
      * callbacks from the Manager.
      */
-    oneway void unregister();
+    void unregister();
 }

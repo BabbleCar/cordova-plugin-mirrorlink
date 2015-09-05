@@ -31,10 +31,6 @@ oneway interface IEventMappingListener {
      * <i>Function reference 0x0502.</i>
      * <br>
      * MirrorLink session event configuration information has changed.
-     * <br>
-     * Please note that the knob keys, device keys, multimedia keys, function keys, ITU keys, touch
-     * and pressurem mask parameters refer to the what is supported by the Session (by both the
-     * Client AND the Server).
      *
      * @param eventConfiguration The event configuration of the MirrorLink session. The fields
      * available in the return type are defined in {@link Defs.EventConfiguration}.
