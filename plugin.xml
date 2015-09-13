@@ -4,7 +4,7 @@
         id="cordova-plugin-mirrorlink"
         version="0.0.1">
     <name>Mirror Link</name>
-    <description>Mirror Link Api</description>
+    <description>MirrorLink Api</description>
     <license>MIT</license>
     <keywords>cordova,plugin,mirrorlink</keywords>
     <repo>https://github.com/buse974/cordova-plugin-mirrorlink.git</repo>

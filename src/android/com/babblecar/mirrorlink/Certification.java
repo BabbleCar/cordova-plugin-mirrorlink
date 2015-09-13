@@ -4,6 +4,7 @@ import android.os.RemoteException;
 
 import com.mirrorlink.android.commonapi.ICertificationListener;
 import com.mirrorlink.android.commonapi.ICertificationManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -17,7 +18,7 @@ public class Certification extends AbstractMirrorLinkPlugin {
     private final ICertificationListener mCertificationListener = new ICertificationListener.Stub() {
         @Override
         public void onCertificationStatusChanged() throws RemoteException {
-            if(callbackOnCertificationStatusChanged!=null) {
+            if (callbackOnCertificationStatusChanged != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK);
                 result.setKeepCallback(true);
                 callbackOnCertificationStatusChanged.sendPluginResult(result);
@@ -27,44 +28,44 @@ public class Certification extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if(!isconnected) {
+        if (!isconnected) {
             callbackContext.error("service is not connected");
             return false;
         }
 
-        if("onCertificationStatusChanged".equals(action)) {
+        if ("onCertificationStatusChanged".equals(action)) {
             callbackOnCertificationStatusChanged = callbackContext;
             getCertificationManager();
-        //4.3.1 return bundle
-        } else if("getApplicationCertificationStatus".equals(action)){
+            //4.3.1 return bundle
+        } else if ("getApplicationCertificationStatus".equals(action)) {
             try {
                 callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationStatus()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        //4.3.2 return string
-        } else if("getApplicationCertifyingEntities".equals(action)){
+            //4.3.2 return string
+        } else if ("getApplicationCertifyingEntities".equals(action)) {
             try {
                 callbackContext.success(getCertificationManager().getApplicationCertifyingEntities());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        //4.3.3 return bundle
-        } else if("getApplicationCertificationInformation".equals(action)){
+            //4.3.3 return bundle
+        } else if ("getApplicationCertificationInformation".equals(action)) {
             String entity = args.getString(0);
             try {
                 callbackContext.success(BundleToJSONObject(getCertificationManager().getApplicationCertificationInformation(entity)));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }  else if("unregister".equals(action)) {
+        } else if ("unregister".equals(action)) {
             try {
                 getCertificationManager().unregister();
                 callbackContext.success();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             callbackContext.error("AlertPlugin." + action + " not found !");
             return false;
         }

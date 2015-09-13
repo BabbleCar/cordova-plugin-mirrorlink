@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
+
 import com.mirrorlink.android.commonapi.ICommonAPIService;
+
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 
@@ -17,7 +19,7 @@ public class Api extends AbstractMirrorLinkPlugin {
     private CallbackContext callbackBind = null;
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
-        if("connect".equals(action)) {
+        if ("connect".equals(action)) {
             callbackBind = callbackContext;
             connect();
 
@@ -33,17 +35,18 @@ public class Api extends AbstractMirrorLinkPlugin {
             activity.bindService(intent, new ServiceConnection() {
                 public void onServiceDisconnected(ComponentName name) {
                     mCommonAPI = null;
-                    isconnected=false;
+                    isconnected = false;
                 }
+
                 public void onServiceConnected(ComponentName name, IBinder service) {
-                    isconnected=true;
+                    isconnected = true;
                     mCommonAPI = ICommonAPIService.Stub.asInterface(service);
                     try {
                         mCommonAPI.applicationStarted(activity.getPackageName(), mCommonAPI.getCommonAPIServiceApiLevel());
                         callbackBind.success();
                     } catch (RemoteException e) {
                         mCommonAPI = null;
-                        isconnected=false;
+                        isconnected = false;
                     }
                 }
             }, Context.BIND_AUTO_CREATE);
@@ -55,7 +58,7 @@ public class Api extends AbstractMirrorLinkPlugin {
         PackageManager pm = activity.getPackageManager();
         List<ResolveInfo> resolveInfo = pm.queryIntentServices(commonAPIIntent, 0);
         if (resolveInfo == null || resolveInfo.size() != 1) {
-           // Log.e(TAG, "Multiple CommonAPI services are available, one is likely not to be trusted!");
+            // Log.e(TAG, "Multiple CommonAPI services are available, one is likely not to be trusted!");
         }
         assert resolveInfo != null;
         ResolveInfo serviceInfo;

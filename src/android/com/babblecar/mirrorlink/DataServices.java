@@ -2,8 +2,10 @@ package com.babblecar.mirrorlink;
 
 import android.os.Bundle;
 import android.os.RemoteException;
+
 import com.mirrorlink.android.commonapi.IDataServicesListener;
 import com.mirrorlink.android.commonapi.IDataServicesManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -25,14 +27,14 @@ public class DataServices extends AbstractMirrorLinkPlugin {
     private final IDataServicesListener mDataServicesListener = new IDataServicesListener.Stub() {
         @Override
         public void onAvailableServicesChanged(List<Bundle> services) throws RemoteException {
-            if(callbackOnAvailableServicesChanged!=null) {
+            if (callbackOnAvailableServicesChanged != null) {
                 JSONArray jservices = new JSONArray();
 
                 for (Bundle b : services) {
                     jservices.put(BundleToJSONObject(b));
                 }
 
-                PluginResult result = new PluginResult(PluginResult.Status.OK,jservices);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, jservices);
                 result.setKeepCallback(true);
                 callbackOnAvailableServicesChanged.sendPluginResult(result);
             }
@@ -40,7 +42,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
         @Override
         public void onRegisterForService(int serviceId, boolean success) throws RemoteException {
-            if(callbackOnRegisterForService!=null) {
+            if (callbackOnRegisterForService != null) {
                 JSONObject j = new JSONObject();
                 try {
                     j.put("serviceId", serviceId);
@@ -48,7 +50,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                PluginResult result = new PluginResult(PluginResult.Status.OK,j);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, j);
                 result.setKeepCallback(true);
                 callbackOnRegisterForService.sendPluginResult(result);
             }
@@ -56,7 +58,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
         @Override
         public void onSubscribeResponse(int serviceId, int objectId, boolean success, int subscriptionType, int interval) throws RemoteException {
-            if(callbackOnSubscribeResponse!=null) {
+            if (callbackOnSubscribeResponse != null) {
                 JSONObject j = new JSONObject();
                 try {
                     j.put("serviceId", serviceId);
@@ -67,7 +69,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                PluginResult result = new PluginResult(PluginResult.Status.OK,j);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, j);
                 result.setKeepCallback(true);
                 callbackOnSubscribeResponse.sendPluginResult(result);
             }
@@ -75,7 +77,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
         @Override
         public void onSetDataObjectResponse(int serviceId, int objectId, boolean success) throws RemoteException {
-            if(callbackOnSetDataObjectResponse!=null) {
+            if (callbackOnSetDataObjectResponse != null) {
                 JSONObject j = new JSONObject();
                 try {
                     j.put("serviceId", serviceId);
@@ -84,7 +86,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                PluginResult result = new PluginResult(PluginResult.Status.OK,j);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, j);
                 result.setKeepCallback(true);
                 callbackOnSetDataObjectResponse.sendPluginResult(result);
             }
@@ -92,7 +94,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
         @Override
         public void onGetDataObjectResponse(int serviceId, int objectId, boolean success, Bundle object) throws RemoteException {
-            if(callbackOnGetDataObjectResponse!=null) {
+            if (callbackOnGetDataObjectResponse != null) {
                 JSONObject j = new JSONObject();
                 try {
                     j.put("serviceId", serviceId);
@@ -102,7 +104,7 @@ public class DataServices extends AbstractMirrorLinkPlugin {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                PluginResult result = new PluginResult(PluginResult.Status.OK,j);
+                PluginResult result = new PluginResult(PluginResult.Status.OK, j);
                 result.setKeepCallback(true);
                 callbackOnGetDataObjectResponse.sendPluginResult(result);
             }
@@ -111,109 +113,93 @@ public class DataServices extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if(!isconnected) {
+        if (!isconnected) {
             callbackContext.error("service is not connected");
             return false;
         }
-
-        if("onAvailableServicesChanged".equals(action)) {
-            callbackOnAvailableServicesChanged = callbackContext;
-            getDataServicesManager();
-        }else if("onRegisterForService".equals(action)){
-            callbackOnRegisterForService = callbackContext;
-            getDataServicesManager();
-        }else if("onSubscribeResponse".equals(action)) {
-            callbackOnSubscribeResponse = callbackContext;
-            getDataServicesManager();
-        }else if("onSetDataObjectResponse".equals(action)) {
-            callbackOnSetDataObjectResponse = callbackContext;
-            getDataServicesManager();
-        }else if("onGetDataObjectResponse".equals(action)) {
-            callbackOnGetDataObjectResponse = callbackContext;
-            getDataServicesManager();
-        }else if("getAvailableServices".equals(action)) {
+        // 4.11.1
+        if ("getAvailableServices".equals(action)) {
             try {
                 callbackContext.success(ListBundleToJSONArray(getDataServicesManager().getAvailableServices()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }else if("getObject".equals(action)) {
-            try {
-                getDataServicesManager().getObject(args.getInt(0), args.getInt(1));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            callbackContext.success();
-        }else if("registerToService".equals(action)) {
+            //4.11.2
+        } else if ("onAvailableServicesChanged".equals(action)) {
+            callbackOnAvailableServicesChanged = callbackContext;
+            getDataServicesManager();
+            //4.11.3
+        } else if ("registerToService".equals(action)) {
             try {
                 getDataServicesManager().registerToService(args.getInt(0), args.getInt(1), args.getInt(2));
                 callbackContext.success();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }
-        //TODO do setObject
-        /*else if("setObject".equals(action)) {
-            callbackSetObject = callbackContext;
-            callbackLocal = new MirrorLinkCallback()  {
-                @Override
-                public void callbackCall() {
-                    try {
-                        JSONObject jo = args.getJSONObject(2);
-
-                        Bundle LATITUDE_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cLatitude.getValue());
-                        coords.putBundle(Defs.LocationService.LATITUDE_FIELD_UID, LATITUDE_FIELD_UID);
-
-                        Bundle LONGITUDE_FIELD_UID = new Bundle();
-                        LONGITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cLongtitue.getValue());
-                        coords.putBundle(Defs.LocationService.LONGITUDE_FIELD_UID, LONGITUDE_FIELD_UID);
-
-                        Bundle ALTITUDE_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cAltitude.getValue());
-                        coords.putBundle(Defs.LocationService.ALTITUDE_FIELD_UID, ALTITUDE_FIELD_UID);
-
-                        Bundle ACCURACY_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cAccuracy.getValue());
-                        coords.putBundle(Defs.LocationService.ACCURACY_FIELD_UID, ACCURACY_FIELD_UID);
-
-                        Bundle ALTITUDEACCURACY_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cAltAccuracy.getValue());
-                        coords.putBundle(Defs.LocationService.ALTITUDEACCURACY_FIELD_UID, ALTITUDEACCURACY_FIELD_UID);
-
-                        Bundle HEADING_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cHeading.getValue());
-                        coords.putBundle(Defs.LocationService.HEADING_FIELD_UID, HEADING_FIELD_UID);
-
-                        Bundle SPEED_FIELD_UID = new Bundle();
-                        LATITUDE_FIELD_UID.putDouble(Defs.DataObjectKeys.VALUE, cSpeed.getValue());
-                        coords.putBundle(Defs.LocationService.SPEED_FIELD_UID, SPEED_FIELD_UID);
-
-                        locationObject.putBundle(Defs.LocationService.COORD_FIELD_UID, coords);
-
-                        Date d = new Date();
-                        locationObject.putLong(Defs.LocationService.TIMESTAMP_FIELD_UID, d.getTime());
-
-                        try {
-                            mAppContext.getDataServicesManager().setObject(mDataServiceId, Defs.LocationService.LOCATION_OBJECT_UID, locationObject);
-
-                        Bundle b = new Bundle();
-                        for (int i = 0; i < jo.length(); i++) {
-                            b.p
-                        }
-
-                        mDataServicesManager.setObject(args.getInt(0), args.get(1),);
-                        callbackSetObject.success();
-                    } catch (RemoteException | JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            execlocal();
-            return true;
-        }*/
-
-        else {
+            //4.11.4
+        } else if ("onRegisterForService".equals(action)) {
+            callbackOnRegisterForService = callbackContext;
+            getDataServicesManager();
+            //4.11.5
+        } else if ("unregisterFromService".equals(action)) {
+            try {
+                getDataServicesManager().unregisterFromService(args.getInt(0));
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.11.6
+        } else if ("subscribeObject".equals(action)) {
+            try {
+                getDataServicesManager().subscribeObject(args.getInt(0), args.getInt(1));
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.11.7
+        } else if ("onSubscribeResponse".equals(action)) {
+            callbackOnSubscribeResponse = callbackContext;
+            getDataServicesManager();
+            //4.11.8
+        } else if ("unsubscribeObject".equals(action)) {
+            try {
+                getDataServicesManager().unsubscribeObject(args.getInt(0), args.getInt(1));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            callbackContext.success();
+            //4.11.9
+        } else if ("setObject".equals(action)) {
+            try {
+                getDataServicesManager().setObject(args.getInt(0), args.getInt(1), JSONObjectToBundle(args.getJSONObject(1)));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            callbackContext.success();
+            //4.11.10
+        } else if ("onSetDataObjectResponse".equals(action)) {
+            callbackOnSetDataObjectResponse = callbackContext;
+            getDataServicesManager();
+            //4.11.11
+        } else if ("getObject".equals(action)) {
+            try {
+                getDataServicesManager().getObject(args.getInt(0), args.getInt(1));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            callbackContext.success();
+            //4.11.11
+        } else if ("onGetDataObjectResponse".equals(action)) {
+            callbackOnGetDataObjectResponse = callbackContext;
+            getDataServicesManager();
+        } else if ("unregister".equals(action)) {
+            try {
+                getDataServicesManager().unregister();
+                callbackContext.success();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
             callbackContext.error("AlertPlugin." + action + " not found !");
             return false;
         }

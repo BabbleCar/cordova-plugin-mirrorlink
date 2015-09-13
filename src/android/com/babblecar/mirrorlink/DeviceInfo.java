@@ -2,8 +2,10 @@ package com.babblecar.mirrorlink;
 
 import android.os.Bundle;
 import android.os.RemoteException;
+
 import com.mirrorlink.android.commonapi.IDeviceInfoListener;
 import com.mirrorlink.android.commonapi.IDeviceInfoManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -18,7 +20,7 @@ public class DeviceInfo extends AbstractMirrorLinkPlugin {
     private final IDeviceInfoListener mDeviceInfoListener = new IDeviceInfoListener.Stub() {
         @Override
         public void onDeviceInfoChanged(Bundle clientInformation) throws RemoteException {
-            if(callbackOnDeviceInfoChanged!=null) {
+            if (callbackOnDeviceInfoChanged != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, BundleToJSONObject(clientInformation));
                 result.setKeepCallback(true);
                 callbackOnDeviceInfoChanged.sendPluginResult(result);
@@ -28,35 +30,47 @@ public class DeviceInfo extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if(!isconnected) {
+        if (!isconnected) {
             callbackContext.error("service is not connected");
             return false;
         }
 
-        if("onDeviceInfoChanged".equals(action)) {
-            callbackOnDeviceInfoChanged = callbackContext;
-            getDeviceInfoManager();
-        }else if("getMirrorLinkClientInformation".equals(action)) {
-            try {
-                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getMirrorLinkClientInformation()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }else if("getServerVirtualKeyboardSupport".equals(action)) {
-            try {
-                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getServerVirtualKeyboardSupport()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }else if("getMirrorLinkSessionVersionMajor".equals(action)) {
+        //4.2.1
+        if ("getMirrorLinkSessionVersionMajor".equals(action)) {
             try {
                 callbackContext.success(getDeviceInfoManager().getMirrorLinkSessionVersionMajor());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }else if("getMirrorLinkSessionVersionMinor".equals(action)) {
+            //4.2.1
+        } else if ("getMirrorLinkSessionVersionMinor".equals(action)) {
             try {
                 callbackContext.success(getDeviceInfoManager().getMirrorLinkSessionVersionMinor());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.2.2
+        } else if ("getMirrorLinkClientInformation".equals(action)) {
+            try {
+                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getMirrorLinkClientInformation()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.2.4
+        } else if ("onDeviceInfoChanged".equals(action)) {
+            callbackOnDeviceInfoChanged = callbackContext;
+            getDeviceInfoManager();
+            //4.2.5
+        } else if ("getServerVirtualKeyboardSupport".equals(action)) {
+            try {
+                callbackContext.success(BundleToJSONObject(getDeviceInfoManager().getServerVirtualKeyboardSupport()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else if ("unregister".equals(action)) {
+            try {
+                getDeviceInfoManager().unregister();
+                callbackContext.success();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

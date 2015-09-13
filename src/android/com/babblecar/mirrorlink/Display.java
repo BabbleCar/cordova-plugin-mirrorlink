@@ -2,8 +2,10 @@ package com.babblecar.mirrorlink;
 
 import android.os.Bundle;
 import android.os.RemoteException;
+
 import com.mirrorlink.android.commonapi.IDisplayListener;
 import com.mirrorlink.android.commonapi.IDisplayManager;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -19,15 +21,16 @@ public class Display extends AbstractMirrorLinkPlugin {
     private final IDisplayListener mDisplayListener = new IDisplayListener.Stub() {
         @Override
         public void onDisplayConfigurationChanged(Bundle displayConfiguration) throws RemoteException {
-            if(callbackOnDisplayConfigurationChanged!=null) {
+            if (callbackOnDisplayConfigurationChanged != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, BundleToJSONObject(displayConfiguration));
                 result.setKeepCallback(true);
                 callbackOnDisplayConfigurationChanged.sendPluginResult(result);
             }
         }
+
         @Override
         public void onPixelFormatChanged(Bundle pixelFormat) throws RemoteException {
-            if(callbackOnPixelFormatChanged!=null) {
+            if (callbackOnPixelFormatChanged != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, BundleToJSONObject(pixelFormat));
                 result.setKeepCallback(true);
                 callbackOnPixelFormatChanged.sendPluginResult(result);
@@ -37,29 +40,40 @@ public class Display extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if(!isconnected) {
+        if (!isconnected) {
             callbackContext.error("service is not connected");
             return false;
         }
 
-        if("onDisplayConfigurationChanged".equals(action)) {
-            callbackOnDisplayConfigurationChanged = callbackContext;
-            getDisplayManager();
-        }else if("onPixelFormatChanged".equals(action)){
-            callbackOnPixelFormatChanged = callbackContext;
-            getDisplayManager();
-        }else if("getClientPixelFormat".equals(action)) {
-            try {
-                callbackContext.success(BundleToJSONObject(getDisplayManager().getClientPixelFormat()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }else if("eventMappings".equals(action)) {
+        //4.5.1
+        if ("getDisplayConfiguration".equals(action)) {
             try {
                 callbackContext.success(BundleToJSONObject(getDisplayManager().getDisplayConfiguration()));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+            //4.5.2
+        } else if ("onDisplayConfigurationChanged".equals(action)) {
+            callbackOnDisplayConfigurationChanged = callbackContext;
+            getDisplayManager();
+            //4.5.3
+        } else if ("getClientPixelFormat".equals(action)) {
+            try {
+                callbackContext.success(BundleToJSONObject(getDisplayManager().getClientPixelFormat()));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.5.4
+        } else if ("onPixelFormatChanged".equals(action)) {
+            callbackOnPixelFormatChanged = callbackContext;
+            getDisplayManager();
+        } else if ("unregister".equals(action)) {
+            try {
+                getDisplayManager().unregister();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            callbackContext.success();
         } else {
             callbackContext.error("AlertPlugin." + action + " not found !");
             return false;

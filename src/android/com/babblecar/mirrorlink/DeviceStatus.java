@@ -1,12 +1,12 @@
 package com.babblecar.mirrorlink;
 
 import android.os.RemoteException;
+
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.apache.cordova.CallbackContext;
 
-import com.mirrorlink.android.commonapi.IContextManager;
 import com.mirrorlink.android.commonapi.IDeviceStatusListener;
 import com.mirrorlink.android.commonapi.IDeviceStatusManager;
 
@@ -21,23 +21,25 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
     private final IDeviceStatusListener mDeviceStatusListener = new IDeviceStatusListener.Stub() {
         @Override
         public void onDriveModeChange(boolean driveMode) throws RemoteException {
-            if(callbackDriveMode!=null) {
+            if (callbackDriveMode != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, driveMode);
                 result.setKeepCallback(true);
                 callbackDriveMode.sendPluginResult(result);
             }
         }
+
         @Override
         public void onNightModeChanged(boolean nightMode) throws RemoteException {
-            if(callbackNightMode!=null) {
+            if (callbackNightMode != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, nightMode);
                 result.setKeepCallback(true);
                 callbackNightMode.sendPluginResult(result);
             }
         }
+
         @Override
         public void onMicrophoneStatusChanged(boolean micInput) throws RemoteException {
-            if(callbackMicrophoneStatus!=null) {
+            if (callbackMicrophoneStatus != null) {
                 PluginResult result = new PluginResult(PluginResult.Status.OK, micInput);
                 result.setKeepCallback(true);
                 callbackMicrophoneStatus.sendPluginResult(result);
@@ -47,41 +49,56 @@ public class DeviceStatus extends AbstractMirrorLinkPlugin {
 
     public boolean execute(String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-        if(!isconnected) {
+        if (!isconnected) {
             callbackContext.error("service is not connected");
             return false;
         }
 
-        if("onDriveModeChange".equals(action)) {
+        //4.10.1
+        if ("isInDriveMode".equals(action)) {
+            try {
+                callbackContext.success(getDeviceStatusManager().isInDriveMode() ? 1 : 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.10.2
+        } else if ("onDriveModeChange".equals(action)) {
             callbackDriveMode = callbackContext;
             getDeviceStatusManager();
-        }else if("onNightModeChanged".equals(action)){
+            //4.10.3
+        } else if ("isInNightMode".equals(action)) {
+            try {
+                callbackContext.success(getDeviceStatusManager().isInNightMode() ? 1 : 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.10.4
+        } else if ("onNightModeChanged".equals(action)) {
             callbackNightMode = callbackContext;
             getDeviceStatusManager();
-        }else if("onMicrophoneStatusChanged".equals(action)){
+            //4.10.5
+        } else if ("isMicrophoneOn".equals(action)) {
+            try {
+                callbackContext.success(getDeviceStatusManager().isMicrophoneOn() ? 1 : 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            //4.10.6
+        } else if ("onMicrophoneStatusChanged".equals(action)) {
             callbackMicrophoneStatus = callbackContext;
             getDeviceStatusManager();
-        }else if("isInDriveMode".equals(action)) {
+            //4.10.7
+        } else if ("setMicrophoneOpen".equals(action)) {
             try {
-                callbackContext.success(String.valueOf(getDeviceStatusManager().isInDriveMode()));
+                getDeviceStatusManager().setMicrophoneOpen(args.getBoolean(0), args.getBoolean(1));
+                callbackContext.success();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-        }else if("isInNightMode".equals(action)) {
+        } else if ("unregister".equals(action)) {
             try {
-                callbackContext.success(String.valueOf(getDeviceStatusManager().isInNightMode()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }else if("isMicrophoneOn".equals(action)) {
-            try {
-                callbackContext.success(String.valueOf(getDeviceStatusManager().isMicrophoneOn()));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }else if("setMicrophoneOpen".equals(action)) {
-            try {
-                callbackContext.success(String.valueOf(getDeviceStatusManager().setMicrophoneOpen(args.getBoolean(0), args.getBoolean(1))));
+                getDeviceStatusManager().unregister();
+                callbackContext.success();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
