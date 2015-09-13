@@ -1,6 +1,8 @@
 # cordova-plugin-mirrorlink
 
-Plugin cordova for MirrorLink Technology
+Plugin cordova for MirrorLink Technology 
+
+Version stable.
 
 ## Revision Common Api
 
@@ -9,7 +11,6 @@ Plugin cordova for MirrorLink Technology
 ## Todo
 
   - Test Unit
-  - Check all services parameters
   - Documentation
 
 ## Installation
