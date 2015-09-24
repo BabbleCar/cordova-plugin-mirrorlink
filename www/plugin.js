@@ -1,88 +1,99 @@
 // Events
 var E_ML_AVAILABLE = 'mirrorlink_available',
-// CERTIFICATION EVENTS
-E_ML_CERTIFICATION_STATUS_CHANGE = 'mirrorlink_certification_status_changed',
-// CONNECTION EVENTS
-E_ML_CONNECTION_AUDIO_CHANGE = 'mirrorlink_connection_audio_changed', E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE = 'mirrorlink_connection_remote_display_changed', E_ML_CONNECTION_SESSION_CHANGE = 'mirrorlink_connection_session_changed',
-// CONTEXT EVENTS
-E_ML_CONTEXT_FRAMEBUFFER_BLOCKED = 'mirrorlink_context_framebuffer_blocked', E_ML_CONTEXT_AUDIO_BLOCKED = 'mirrorlink_context_audio_blocked', E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED = 'mirrorlink_context_framebuffer_unblocked', E_ML_CONTEXT_AUDIO_UNBLOCKED = 'mirrorlink_context_audio_unblocked',
-// DATA SERVICES
-E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED = "mirrorlink_dataservies_available_services_changed", E_ML_DATASERVICES_REGISTER_FOR_SERVICE = "mirrorlink_dataservies_register_for_service", E_ML_DATASERVICES_SUBSCRIBE_REPONSE = "mirrorlink_dataservies_subscribe_reponse", E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE = "mirrorlink_dataservies_set_data_object_response", E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE = "mirrorlink_dataservies_get_data_object_response",
-// DEVICE INFO
-E_ML_DEVICEINFO_DEVICE_INFO_CHANGED = "mirrorlink_datainfo_device_info_changed",
-// DEVICE STATUS EVENTS
-E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED = 'mirrorlink_device_status_drive_mode_changed', E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED = 'mirrorlink_device_status_night_mode_changed', E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED = 'mirrorlink_device_status_microphone_status_changed',
-// DISPLAY
-E_ML_DISPLAY_CONFIGURATION_CHANGED = 'mirrorlink_display_configuration_changed', E_ML_DISPLAY_PIXEL_FORMAT_CHANGED = 'mirrorlink_display_pixel_format_changed',
-// EVENTMAPPING
-E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED = 'mirrorlink_evenmapping_event_configuration_changed', E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED = 'mirrorlink_evenmapping_event_mapping_changed',
-// NOTIFICATION
-E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED = 'mirrorlink_notification_enabled_changed', E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED = 'mirrorlink_notification_configuration_changed', E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED = 'mirrorlink_notification_action_received',
-// ERRORS
-E_ML_ERR_SERVICE_CONNECTION_FAILED = 'mirrorlink_error_service_connection_failed';
-
+    // CERTIFICATION EVENTS
+    E_ML_CERTIFICATION_STATUS_CHANGE = 'mirrorlink_certification_status_changed',
+    // CONNECTION EVENTS
+    E_ML_CONNECTION_AUDIO_CHANGE = 'mirrorlink_connection_audio_changed',
+    E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE = 'mirrorlink_connection_remote_display_changed',
+    E_ML_CONNECTION_SESSION_CHANGE = 'mirrorlink_connection_session_changed',
+    // CONTEXT EVENTS
+    E_ML_CONTEXT_FRAMEBUFFER_BLOCKED = 'mirrorlink_context_framebuffer_blocked',
+    E_ML_CONTEXT_AUDIO_BLOCKED = 'mirrorlink_context_audio_blocked',
+    E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED = 'mirrorlink_context_framebuffer_unblocked',
+    E_ML_CONTEXT_AUDIO_UNBLOCKED = 'mirrorlink_context_audio_unblocked',
+    // DATA SERVICES
+    E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED = 'mirrorlink_dataservies_available_services_changed',
+    E_ML_DATASERVICES_REGISTER_FOR_SERVICE = 'mirrorlink_dataservies_register_for_service',
+    E_ML_DATASERVICES_SUBSCRIBE_REPONSE = 'mirrorlink_dataservies_subscribe_reponse',
+    E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE = 'mirrorlink_dataservies_set_data_object_response',
+    E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE = 'mirrorlink_dataservies_get_data_object_response',
+    // DEVICE INFO
+    E_ML_DEVICEINFO_DEVICE_INFO_CHANGED = 'mirrorlink_datainfo_device_info_changed',
+    // DEVICE STATUS EVENTS
+    E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED = 'mirrorlink_device_status_drive_mode_changed',
+    E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED = 'mirrorlink_device_status_night_mode_changed',
+    E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED = 'mirrorlink_device_status_microphone_status_changed',
+    // DISPLAY
+    E_ML_DISPLAY_CONFIGURATION_CHANGED = 'mirrorlink_display_configuration_changed',
+    E_ML_DISPLAY_PIXEL_FORMAT_CHANGED = 'mirrorlink_display_pixel_format_changed',
+    // EVENTMAPPING
+    E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED = 'mirrorlink_evenmapping_event_configuration_changed',
+    E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED = 'mirrorlink_evenmapping_event_mapping_changed',
+    // NOTIFICATION
+    E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED = 'mirrorlink_notification_enabled_changed',
+    E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED = 'mirrorlink_notification_configuration_changed',
+    E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED = 'mirrorlink_notification_action_received',
+    // ERRORS
+    E_ML_ERR_SERVICE_CONNECTION_FAILED = 'mirrorlink_error_service_connection_failed';
 // Event manager.
 var cordovaEventManager = {
-	callbacks_stacks : {},
-	on : function(event, callback) {
-		if (!this.callbacks_stacks[event]) {
-			this.callbacks_stacks[event] = [ callback ];
-		} else {
-			this.callbacks_stacks[event].push(callback);
-		}
-		return this;
-	},
-	off : function(event, callback) {
-		if (!callback && this.callbacks_stacks[event]) {
-			this.callbacks_stacks[event].length = 0;
-		} else if (this.callbacks_stacks[event] && callback) {
-			var i = this.callbacks_stacks[event].indexOf(callback);
-			if (i !== -1) {
-				this.callbacks_stacks[event].splice(i, 1);
-			}
-		}
-		return this;
-	},
-	emit : function(event, datas) {
-		if (this.callbacks_stacks[event]) {
-			this.callbacks_stacks[event].forEach(function(callback) {
-				callback(datas);
-			});
-		}
-		return this;
-	},
-	service_listeners : {},
-	createServiceListener : function(event, cordovaService, cordovaAction,
-			cordovaParams, onError) {
-		if (!this.service_listeners[event]) {
-			this.service_listeners[event] = function(datas) {
-				cordovaEventManager.emit(event, datas);
-			};
-			cordova.exec(this.service_listeners[event], onError,
-					cordovaService, cordovaAction, cordovaParams || []);
-		}
-		return this;
-	}
+    callbacks_stacks: {},
+    on: function(event, callback) {
+        if (!this.callbacks_stacks[event]) {
+            this.callbacks_stacks[event] = [
+                callback
+            ];
+        } else {
+            this.callbacks_stacks[event].push(callback);
+        }
+        return this;
+    },
+    off: function(event, callback) {
+        if (!callback && this.callbacks_stacks[event]) {
+            this.callbacks_stacks[event].length = 0;
+        } else if (this.callbacks_stacks[event] && callback) {
+            var i = this.callbacks_stacks[event].indexOf(callback);
+            if (i !== -1) {
+                this.callbacks_stacks[event].splice(i, 1);
+            }
+        }
+        return this;
+    },
+    emit: function(event, datas) {
+        if (this.callbacks_stacks[event]) {
+            this.callbacks_stacks[event].forEach(function(callback) {
+                callback(datas);
+            });
+        }
+        return this;
+    },
+    service_listeners: {},
+    createServiceListener: function(event, cordovaService, cordovaAction, cordovaParams, onError) {
+        if (!this.service_listeners[event]) {
+            this.service_listeners[event] = function(datas) {
+                cordovaEventManager.emit(event, datas);
+            };
+            cordova.exec(this.service_listeners[event], onError, cordovaService, cordovaAction, cordovaParams || []);
+        }
+        return this;
+    }
 };
-
 var mirrorlink = {
-	certification : {},
-	connection : {},
-	context : {},
-	dataservices : {},
-	deviceinfo : {},
-	devicestatus : {},
-	display : {},
-	eventmapping : {},
-	notification : {}
+    certification: {},
+    connection: {},
+    context: {},
+    dataservices: {},
+    deviceinfo: {},
+    devicestatus: {},
+    display: {},
+    eventmapping: {},
+    notification: {}
 };
-
 /**
  * Mirrorlink plugin status {boolean} true if mirrorlink plugin is connected to
  * mirrorlink android service.
  */
 mirrorlink.is_available = false;
-
 /**
  * Enable mirrorlink plugin ( connect your app to mirrorlink android service )
  * 
@@ -93,20 +104,17 @@ mirrorlink.is_available = false;
  *            err Callback executed when mirrorlink plugin failed to connect.
  */
 mirrorlink.enable = function(callback, err) {
-	if (typeof callback === 'function') {
-		if (mirrorlink.is_available) {
-			return callback();
-		}
-		cordova.exec(function() {
-			mirrorlink.is_available = true;
-			callback();
-		}, err || function() {
-		}, 'Api', 'connect', []);
-	}
+    if (typeof callback === 'function') {
+        if (mirrorlink.is_available) {
+            return callback();
+        }
+        cordova.exec(function() {
+            mirrorlink.is_available = true;
+            callback();
+        }, err || function() {}, 'Api', 'connect', []);
+    }
 };
-
 // -------- CERTIFICATION SERVICE -----------//
-
 /**
  * Listen when then application certification status change. The application
  * would receive this callback if, for example, the certification status changes
@@ -118,14 +126,11 @@ mirrorlink.enable = function(callback, err) {
  *            err Function executed if service failed to bind listener to event.
  */
 mirrorlink.certification.onCertificationStatusChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_CERTIFICATION_STATUS_CHANGE, 'Certification',
-				'onCertificationStatusChanged', [], err).on(
-				E_ML_CERTIFICATION_STATUS_CHANGE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CERTIFICATION_STATUS_CHANGE, 'Certification', 'onCertificationStatusChanged', [], err)
+            .on(E_ML_CERTIFICATION_STATUS_CHANGE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -134,9 +139,8 @@ mirrorlink.certification.onCertificationStatusChanged = function(callback, err) 
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.certification.offCertificationStatusChanged = function(callback) {
-	cordovaEventManager.off(E_ML_CERTIFICATION_STATUS_CHANGE, callback);
+    cordovaEventManager.off(E_ML_CERTIFICATION_STATUS_CHANGE, callback);
 };
-
 /**
  * Get Application Certification Status.
  * 
@@ -146,14 +150,11 @@ mirrorlink.certification.offCertificationStatusChanged = function(callback) {
  * @param {function}
  *            err Executed if service failed to get certifying entities.
  */
-mirrorlink.certification.getApplicationCertificationStatus = function(callback,
-		err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Certification',
-				'getApplicationCertificationStatus', []);
-	}
+mirrorlink.certification.getApplicationCertificationStatus = function(callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Certification', 'getApplicationCertificationStatus', []);
+    }
 };
-
 /**
  * Get Application Certifying Entities.
  * 
@@ -163,14 +164,11 @@ mirrorlink.certification.getApplicationCertificationStatus = function(callback,
  * @param {function}
  *            err Executed if service failed to get certifying entities.
  */
-mirrorlink.certification.getApplicationCertifyingEntities = function(callback,
-		err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err || function() {
-		}, 'Certification', 'getApplicationCertifyingEntities', []);
-	}
+mirrorlink.certification.getApplicationCertifyingEntities = function(callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err || function() {}, 'Certification', 'getApplicationCertifyingEntities', []);
+    }
 };
-
 /**
  * Get Application Certification Information.
  * 
@@ -185,17 +183,14 @@ mirrorlink.certification.getApplicationCertifyingEntities = function(callback,
  * @param {function}
  *            err Executed if service failed to get information.
  */
-mirrorlink.certification.getApplicationCertificationInformation = function(
-		entity, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function'
-			&& typeof entity === 'string') {
-		cordova.exec(callback, err, 'Certification',
-				'getApplicationCertificationInformation', [ entity ]);
-	}
+mirrorlink.certification.getApplicationCertificationInformation = function(entity, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function' && typeof entity === 'string') {
+        cordova.exec(callback, err, 'Certification', 'getApplicationCertificationInformation', [
+            entity
+        ]);
+    }
 };
-
 // -------- CONNECTION SERVICE -----------//
-
 /**
  * Indicates whether a MirrorLink session is currently established. A MirrorLink
  * is considered established if a ClientProfile has been set on the MirrorLink
@@ -213,12 +208,10 @@ mirrorlink.certification.getApplicationCertificationInformation = function(
  *            err Executed if it failed to get session status.
  */
 mirrorlink.connection.isMirrorLinkSessionEstablished = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Connection',
-				'isMirrorLinkSessionEstablished', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Connection', 'isMirrorLinkSessionEstablished', []);
+    }
 };
-
 /**
  * Listen when the mirrorLink session status has changed.
  * 
@@ -235,14 +228,11 @@ mirrorlink.connection.isMirrorLinkSessionEstablished = function(callback, err) {
  *            err Function executed if service failed to bind listener to event.
  */
 mirrorlink.connection.onMirrorLinkSessionChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_CONNECTION_SESSION_CHANGE, 'Connection',
-				'onMirrorLinkSessionChanged', [], err).on(
-				E_ML_CONNECTION_SESSION_CHANGE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONNECTION_SESSION_CHANGE, 'Connection', 'onMirrorLinkSessionChanged', [], err)
+            .on(E_ML_CONNECTION_SESSION_CHANGE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_session_changed" event.
  * 
@@ -251,9 +241,8 @@ mirrorlink.connection.onMirrorLinkSessionChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.connection.offMirrorLinkSessionChanged = function(callback) {
-	cordovaEventManager.off(E_ML_CONNECTION_SESSION_CHANGE, callback);
+    cordovaEventManager.off(E_ML_CONNECTION_SESSION_CHANGE, callback);
 };
-
 /**
  * Get established audio connections within mirrorlink session.
  * 
@@ -266,11 +255,10 @@ mirrorlink.connection.offMirrorLinkSessionChanged = function(callback) {
  *            err Executed if it failed to get audio connections.
  */
 mirrorlink.connection.getAudioConnections = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Connection', 'getAudioConnections', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Connection', 'getAudioConnections', []);
+    }
 };
-
 /**
  * Listen when the audio connections changed.
  * 
@@ -281,13 +269,11 @@ mirrorlink.connection.getAudioConnections = function(callback, err) {
  *            err Function executed if service failed to bind listener to event.
  */
 mirrorlink.connection.onAudioConnectionsChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(E_ML_CONNECTION_AUDIO_CHANGE,
-				'Connection', 'onAudioConnectionsChanged', [], err).on(
-				E_ML_CONNECTION_AUDIO_CHANGE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONNECTION_AUDIO_CHANGE, 'Connection', 'onAudioConnectionsChanged', [], err)
+            .on(E_ML_CONNECTION_AUDIO_CHANGE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_audio_connection_changed" event.
  * 
@@ -296,9 +282,8 @@ mirrorlink.connection.onAudioConnectionsChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.connection.offAudioConnectionsChanged = function(callback) {
-	cordovaEventManager.off(E_ML_CONNECTION_AUDIO_CHANGE, callback);
+    cordovaEventManager.off(E_ML_CONNECTION_AUDIO_CHANGE, callback);
 };
-
 /**
  * Get established remote display connections within mirrorlink session.
  * 
@@ -310,12 +295,10 @@ mirrorlink.connection.offAudioConnectionsChanged = function(callback) {
  *            err Executed if it failed to get audio connections.
  */
 mirrorlink.connection.getRemoteDisplayConnections = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Connection',
-				'getRemoteDisplayConnections', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Connection', 'getRemoteDisplayConnections', []);
+    }
 };
-
 /**
  * Listen when the remote display connections changed.
  * 
@@ -327,14 +310,11 @@ mirrorlink.connection.getRemoteDisplayConnections = function(callback, err) {
  *            err Function executed if service failed to bind listener to event.
  */
 mirrorlink.connection.onRemoteDisplayConnectionChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, 'Connection',
-				'onRemoteDisplayConnectionChanged', [], err).on(
-				E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, 'Connection', 'onRemoteDisplayConnectionChanged', [], err)
+            .on(E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_audio_connection_changed" event.
  * 
@@ -343,11 +323,9 @@ mirrorlink.connection.onRemoteDisplayConnectionChanged = function(callback, err)
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.connection.offRemoteDisplayConnectionChanged = function(callback) {
-	cordovaEventManager.off(E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, callback);
+    cordovaEventManager.off(E_ML_CONNECTION_REMOTE_DISPLAY_CHANGE, callback);
 };
-
 // -------- CONTEXT SERVICE -----------//
-
 /**
  * 4.9.1 Framebuffer Context Information.
  * 
@@ -399,16 +377,14 @@ mirrorlink.connection.offRemoteDisplayConnectionChanged = function(callback) {
  * @param {function}
  *            err Executed if it failed to get Framebuffer Context Information.
  */
-mirrorlink.context.setFramebufferContextInformation = function(content,
-		handleBlocking, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova
-				.exec(callback, err, 'Context',
-						'setFramebufferContextInformation', [ content,
-								handleBlocking ]);
-	}
+mirrorlink.context.setFramebufferContextInformation = function(content, handleBlocking, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Context', 'setFramebufferContextInformation', [
+            content,
+            handleBlocking
+        ]);
+    }
 };
-
 /**
  * 4.9.2 Framebuffer Blocking Information Callback.
  * 
@@ -438,14 +414,11 @@ mirrorlink.context.setFramebufferContextInformation = function(content,
  * @see #onFramebufferUnblocked
  */
 mirrorlink.context.onFramebufferBlocked = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, 'Context',
-				'onFramebufferBlocked', [], err).on(
-				E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, 'Context', 'onFramebufferBlocked', [], err)
+            .on(E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -454,9 +427,8 @@ mirrorlink.context.onFramebufferBlocked = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.context.offFramebufferBlocked = function(callback) {
-	cordovaEventManager.off(E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, callback);
+    cordovaEventManager.off(E_ML_CONTEXT_FRAMEBUFFER_BLOCKED, callback);
 };
-
 /**
  * 4.9.3 Audio Context Information.
  * 
@@ -513,14 +485,15 @@ mirrorlink.context.offFramebufferBlocked = function(callback) {
  * @param {function}
  *            err Executed if it failed to set Audio Context Information.
  */
-mirrorlink.context.setAudioContextInformation = function(audioContent,
-		audioCategories, handleBlocking, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Context', 'setAudioContextInformation', [
-				audioContent, audioCategories, handleBlocking ]);
-	}
+mirrorlink.context.setAudioContextInformation = function(audioContent, audioCategories, handleBlocking, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Context', 'setAudioContextInformation', [
+            audioContent,
+            audioCategories,
+            handleBlocking
+        ]);
+    }
 };
-
 /**
  * 4.9.4 Audio Blocking Information.
  * 
@@ -542,13 +515,11 @@ mirrorlink.context.setAudioContextInformation = function(audioContent,
  * @see #onFramebufferUnblocked
  */
 mirrorlink.context.onAudioBlocked = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_BLOCKED,
-				'Context', 'onAudioBlocked', [], err).on(
-				E_ML_CONTEXT_AUDIO_BLOCKED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_BLOCKED, 'Context', 'onAudioBlocked', [], err)
+            .on(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -557,9 +528,8 @@ mirrorlink.context.onAudioBlocked = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.context.offAudioBlocked = function(callback) {
-	cordovaEventManager.off(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
+    cordovaEventManager.off(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
 };
-
 /**
  * 4.9.4 Audio Blocking Information.
  * 
@@ -581,13 +551,11 @@ mirrorlink.context.offAudioBlocked = function(callback) {
  * @see #onFramebufferUnblocked
  */
 mirrorlink.context.onAudioBlocked = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_BLOCKED,
-				'Context', 'onAudioBlocked', [], err).on(
-				E_ML_CONTEXT_AUDIO_BLOCKED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_BLOCKED, 'Context', 'onAudioBlocked', [], err)
+            .on(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -596,9 +564,8 @@ mirrorlink.context.onAudioBlocked = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.context.offAudioBlocked = function(callback) {
-	cordovaEventManager.off(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
+    cordovaEventManager.off(E_ML_CONTEXT_AUDIO_BLOCKED, callback);
 };
-
 /**
  * 4.9.5 Framebuffer Unblocking Callback
  * 
@@ -612,14 +579,11 @@ mirrorlink.context.offAudioBlocked = function(callback) {
  * @see #onFramebufferBlocked
  */
 mirrorlink.context.onFramebufferUnblocked = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, 'Context',
-				'onFramebufferUnblocked', [], err).on(
-				E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, 'Context', 'onFramebufferUnblocked', [], err)
+            .on(E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -628,9 +592,8 @@ mirrorlink.context.onFramebufferUnblocked = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.context.offFramebufferUnblocked = function(callback) {
-	cordovaEventManager.off(E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, callback);
+    cordovaEventManager.off(E_ML_CONTEXT_FRAMEBUFFER_UNBLOCKED, callback);
 };
-
 /**
  * 4.9.6 Audio Unblocking Callback
  * 
@@ -642,13 +605,11 @@ mirrorlink.context.offFramebufferUnblocked = function(callback) {
  * @see #onAudioBlocked
  */
 mirrorlink.context.onAudioUnblocked = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_UNBLOCKED,
-				'Context', 'onAudioUnblocked', [], err).on(
-				E_ML_CONTEXT_AUDIO_UNBLOCKED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_CONTEXT_AUDIO_UNBLOCKED, 'Context', 'onAudioUnblocked', [], err)
+            .on(E_ML_CONTEXT_AUDIO_UNBLOCKED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -657,11 +618,9 @@ mirrorlink.context.onAudioUnblocked = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.context.offAudioUnblocked = function(callback) {
-	cordovaEventManager.off(E_ML_CONTEXT_AUDIO_UNBLOCKED, callback);
+    cordovaEventManager.off(E_ML_CONTEXT_AUDIO_UNBLOCKED, callback);
 };
-
 // -------- DATA SERVICES -----------//
-
 /**
  * 4.11.1 Get Available Services.
  * 
@@ -673,11 +632,10 @@ mirrorlink.context.offAudioUnblocked = function(callback) {
  *         the fields as defined in {@link Defs.ServiceInformation}.
  */
 mirrorlink.dataservices.getAvailableServices = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'getAvailableServices', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'getAvailableServices', []);
+    }
 };
-
 /**
  * 4.11.2 Available Services Callback.
  * 
@@ -689,14 +647,11 @@ mirrorlink.dataservices.getAvailableServices = function(callback, err) {
  *            fields as defined in {@link Defs.ServiceInformation}.
  */
 mirrorlink.dataservices.onAvailableServicesChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED, 'DataServices',
-				'onAvailableServicesChanged', [], err).on(
-				E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED, 'DataServices', 'onAvailableServicesChanged', [], err)
+            .on(E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -705,10 +660,8 @@ mirrorlink.dataservices.onAvailableServicesChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.dataservices.offAvailableServicesChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED,
-			callback);
+    cordovaEventManager.off(E_ML_DATASERVICES_AVAILABLE_SERVICES_CHANGED, callback);
 };
-
 /**
  * 4.11.3 Register to a Service.
  * 
@@ -724,11 +677,10 @@ mirrorlink.dataservices.offAvailableServicesChanged = function(callback) {
  *            The minor version of the service supported by the application.
  */
 mirrorlink.dataservices.registerToService = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'registerToService', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'registerToService', []);
+    }
 };
-
 /**
  * 4.11.4 Register to a Service Callback.
  * 
@@ -740,14 +692,11 @@ mirrorlink.dataservices.registerToService = function(callback, err) {
  *            Flag, to indicate whether the action is successful.
  */
 mirrorlink.dataservices.onRegisterForService = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DATASERVICES_REGISTER_FOR_SERVICE, 'DataServices',
-				'offRegisterForService', [], err).on(
-				E_ML_DATASERVICES_REGISTER_FOR_SERVICE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DATASERVICES_REGISTER_FOR_SERVICE, 'DataServices', 'offRegisterForService', [], err)
+            .on(E_ML_DATASERVICES_REGISTER_FOR_SERVICE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -756,9 +705,8 @@ mirrorlink.dataservices.onRegisterForService = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.dataservices.offRegisterForService = function(callback) {
-	cordovaEventManager.off(E_ML_DATASERVICES_REGISTER_FOR_SERVICE, callback);
+    cordovaEventManager.off(E_ML_DATASERVICES_REGISTER_FOR_SERVICE, callback);
 };
-
 /**
  * 4.11.5 Unregister from a Service.
  * 
@@ -767,14 +715,13 @@ mirrorlink.dataservices.offRegisterForService = function(callback) {
  * @param serviceId
  *            Service identifier.
  */
-mirrorlink.dataservices.unregisterFromService = function(serviceId, callback,
-		err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'unregisterFromService',
-				[ serviceId ]);
-	}
+mirrorlink.dataservices.unregisterFromService = function(serviceId, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'unregisterFromService', [
+            serviceId
+        ]);
+    }
 };
-
 /**
  * 4.11.6 Subscribe to an Object.
  * 
@@ -785,14 +732,14 @@ mirrorlink.dataservices.unregisterFromService = function(serviceId, callback,
  * @param objectId
  *            Hash value of the object.
  */
-mirrorlink.dataservices.subscribeObject = function(serviceId, objectId,
-		callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'subscribeObject', [
-				serviceId, objectId ]);
-	}
+mirrorlink.dataservices.subscribeObject = function(serviceId, objectId, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'subscribeObject', [
+            serviceId,
+            objectId
+        ]);
+    }
 };
-
 /**
  * 4.11.7 Subscribe to an Object Callback.
  * 
@@ -816,14 +763,11 @@ mirrorlink.dataservices.subscribeObject = function(serviceId, objectId,
  *            {@link Defs.SubscriptionType#AUTOMATIC}.
  */
 mirrorlink.dataservices.onSubscribeResponse = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DATASERVICES_SUBSCRIBE_REPONSE, 'DataServices',
-				'onSubscribeResponse', [], err).on(
-				E_ML_DATASERVICES_SUBSCRIBE_REPONSE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DATASERVICES_SUBSCRIBE_REPONSE, 'DataServices', 'onSubscribeResponse', [], err)
+            .on(E_ML_DATASERVICES_SUBSCRIBE_REPONSE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -832,9 +776,8 @@ mirrorlink.dataservices.onSubscribeResponse = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.dataservices.offSubscribeResponse = function(callback) {
-	cordovaEventManager.off(E_ML_DATASERVICES_SUBSCRIBE_REPONSE, callback);
+    cordovaEventManager.off(E_ML_DATASERVICES_SUBSCRIBE_REPONSE, callback);
 };
-
 /**
  * 4.11.8 Unsubscribe from an Object.
  * 
@@ -845,14 +788,14 @@ mirrorlink.dataservices.offSubscribeResponse = function(callback) {
  * @param objectId
  *            Hash value of the object.
  */
-mirrorlink.dataservices.unsubscribeObject = function(serviceId, objectId,
-		callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'unsubscribeObject', [
-				serviceId, objectId ]);
-	}
+mirrorlink.dataservices.unsubscribeObject = function(serviceId, objectId, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'unsubscribeObject', [
+            serviceId,
+            objectId
+        ]);
+    }
 };
-
 /**
  * 4.11.9 Set an Object.
  * 
@@ -869,14 +812,15 @@ mirrorlink.dataservices.unsubscribeObject = function(serviceId, objectId,
  * @param object
  *            Bundle containing the object payload.
  */
-mirrorlink.dataservices.setObject = function(serviceId, objectId, object,
-		callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'unsubscribeObject', [
-				serviceId, objectId, object ]);
-	}
+mirrorlink.dataservices.setObject = function(serviceId, objectId, object, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'unsubscribeObject', [
+            serviceId,
+            objectId,
+            object
+        ]);
+    }
 };
-
 /**
  * 4.11.10 Set an Object Callback.
  * 
@@ -890,14 +834,11 @@ mirrorlink.dataservices.setObject = function(serviceId, objectId, object,
  *            Flag to indicate whether the action is successful.
  */
 mirrorlink.dataservices.onSetDataObjectResponse = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE, 'DataServices',
-				'onSetDataObjectResponse', [], err).on(
-				E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE, 'DataServices', 'onSetDataObjectResponse', [], err)
+            .on(E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -906,10 +847,8 @@ mirrorlink.dataservices.onSetDataObjectResponse = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.dataservices.offSetDataObjectResponse = function(callback) {
-	cordovaEventManager.off(E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE,
-			callback);
+    cordovaEventManager.off(E_ML_DATASERVICES_SET_DATA_OBJECT_RESPONSE, callback);
 };
-
 /**
  * 4.11.11 Get an Object.
  * 
@@ -922,12 +861,13 @@ mirrorlink.dataservices.offSetDataObjectResponse = function(callback) {
  *            the hash value of the object
  */
 mirrorlink.dataservices.getObject = function(serviceId, objectId, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DataServices', 'getObject', [ serviceId,
-				objectId ]);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DataServices', 'getObject', [
+            serviceId,
+            objectId
+        ]);
+    }
 };
-
 /**
  * 4.11.11 Get an Object Callback.
  * 
@@ -944,14 +884,11 @@ mirrorlink.dataservices.getObject = function(serviceId, objectId, callback, err)
  *            Bundle containing the object payload.
  */
 mirrorlink.dataservices.onGetDataObjectResponse = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE, 'DataServices',
-				'onGetDataObjectResponse', [], err).on(
-				E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE, 'DataServices', 'onGetDataObjectResponse', [], err)
+            .on(E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -960,12 +897,9 @@ mirrorlink.dataservices.onGetDataObjectResponse = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.dataservices.offGetDataObjectResponse = function(callback) {
-	cordovaEventManager.off(E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE,
-			callback);
+    cordovaEventManager.off(E_ML_DATASERVICES_GET_DATA_OBJECT_RESPONSE, callback);
 };
-
 // -------- DEVISE INFO -----------//
-
 /**
  * 4.2.1 MirrorLink Session Major Version.
  * 
@@ -977,11 +911,10 @@ mirrorlink.dataservices.offGetDataObjectResponse = function(callback) {
  *         available.
  */
 mirrorlink.deviceinfo.getMirrorLinkSessionVersionMajor = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceInfo', 'getObject', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceInfo', 'getObject', []);
+    }
 };
-
 /**
  * 4.2.1 MirrorLink Session Minor Version.
  * 
@@ -993,12 +926,10 @@ mirrorlink.deviceinfo.getMirrorLinkSessionVersionMajor = function(callback, err)
  *         available.
  */
 mirrorlink.deviceinfo.getMirrorLinkSessionVersionMinor = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceInfo',
-				'getMirrorLinkSessionVersionMinor', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceInfo', 'getMirrorLinkSessionVersionMinor', []);
+    }
 };
-
 /**
  * 4.2.2 MirrorLink Client Manufacturer and Model Information.
  * 
@@ -1011,12 +942,10 @@ mirrorlink.deviceinfo.getMirrorLinkSessionVersionMinor = function(callback, err)
  *         {@link Defs.ClientInformation}.
  */
 mirrorlink.deviceinfo.getMirrorLinkClientInformation = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceInfo',
-				'getMirrorLinkClientInformation', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceInfo', 'getMirrorLinkClientInformation', []);
+    }
 };
-
 /**
  * 4.2.4 MirrorLink Client Manufacturer and Model Information Callback.
  * 
@@ -1028,14 +957,11 @@ mirrorlink.deviceinfo.getMirrorLinkClientInformation = function(callback, err) {
  *            {@link Defs.ClientInformation}.
  */
 mirrorlink.deviceinfo.onDeviceInfoChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, 'DataServices',
-				'onDeviceInfoChanged', [], err).on(
-				E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, 'DataServices', 'onDeviceInfoChanged', [], err)
+            .on(E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_context_framebuffer_blocked" event.
  * 
@@ -1044,9 +970,8 @@ mirrorlink.deviceinfo.onDeviceInfoChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.deviceinfo.offDeviceInfoChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, callback);
+    cordovaEventManager.off(E_ML_DEVICEINFO_DEVICE_INFO_CHANGED, callback);
 };
-
 /**
  * 4.2.5 Server Device Virtual Keyboard Support.
  * 
@@ -1058,14 +983,11 @@ mirrorlink.deviceinfo.offDeviceInfoChanged = function(callback) {
  *         values defined in {@link Defs.VirtualKeyboardSupport}.
  */
 mirrorlink.deviceinfo.getServerVirtualKeyboardSupport = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceInfo',
-				'getServerVirtualKeyboardSupport', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceInfo', 'getServerVirtualKeyboardSupport', []);
+    }
 };
-
 // -------- DEVICE STATUS SERVICE -----------//
-
 /**
  * 4.10.1 Drive Mode.
  * 
@@ -1075,11 +997,10 @@ mirrorlink.deviceinfo.getServerVirtualKeyboardSupport = function(callback, err) 
  * @return Flag set to true if the Server is in Drive Mode.
  */
 mirrorlink.devicestatus.isInDriveMode = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceStatus', 'isInDriveMode', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceStatus', 'isInDriveMode', []);
+    }
 };
-
 /**
  * 4.10.2 Drive Mode Callback.
  * 
@@ -1089,14 +1010,11 @@ mirrorlink.devicestatus.isInDriveMode = function(callback, err) {
  *            Flag indicating drive mode.
  */
 mirrorlink.devicestatus.onDriveModeChange = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, 'DeviceStatus',
-				'onDriveModeChange', [], err).on(
-				E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, 'DeviceStatus', 'onDriveModeChange', [], err)
+            .on(E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1105,9 +1023,8 @@ mirrorlink.devicestatus.onDriveModeChange = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.devicestatus.offDriveModeChange = function(callback) {
-	cordovaEventManager.off(E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, callback);
+    cordovaEventManager.off(E_ML_DEVICE_STATUS_DRIVE_MODE_CHANGED, callback);
 };
-
 /**
  * 4.10.3 Night Mode.
  * 
@@ -1117,11 +1034,10 @@ mirrorlink.devicestatus.offDriveModeChange = function(callback) {
  * @return Flag set to true if the Server is in Night Mode.
  */
 mirrorlink.devicestatus.isInNightMode = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceStatus', 'isInNightMode', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceStatus', 'isInNightMode', []);
+    }
 };
-
 /**
  * 4.10.4 Night Mode Callback.
  * 
@@ -1131,14 +1047,11 @@ mirrorlink.devicestatus.isInNightMode = function(callback, err) {
  *            Flag indicating night mode.
  */
 mirrorlink.devicestatus.onNightModeChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, 'DeviceStatus',
-				'onNightModeChanged', [], err).on(
-				E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, 'DeviceStatus', 'onNightModeChanged', [], err)
+            .on(E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1147,9 +1060,8 @@ mirrorlink.devicestatus.onNightModeChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.devicestatus.offNightModeChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, callback);
+    cordovaEventManager.off(E_ML_DEVICE_STATUS_NIGHT_MODE_CHANGED, callback);
 };
-
 /**
  * 4.10.5 Microphone State.
  * 
@@ -1159,11 +1071,10 @@ mirrorlink.devicestatus.offNightModeChanged = function(callback) {
  * @return Flag set to true if the mic input is enabled on MirrorLink Client.
  */
 mirrorlink.devicestatus.isMicrophoneOn = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceStatus', 'isMicrophoneOn', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceStatus', 'isMicrophoneOn', []);
+    }
 };
-
 /**
  * 4.10.6 Open Microphone Callback.
  * 
@@ -1173,14 +1084,11 @@ mirrorlink.devicestatus.isMicrophoneOn = function(callback, err) {
  *            Flag whether mic input is enabled on MirrorLink Client.
  */
 mirrorlink.devicestatus.onMicrophoneStatusChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED, 'DeviceStatus',
-				'onMicrophoneStatusChanged', [], err).on(
-				E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED, 'DeviceStatus', 'onMicrophoneStatusChanged', [], err)
+            .on(E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1189,10 +1097,8 @@ mirrorlink.devicestatus.onMicrophoneStatusChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.devicestatus.offMicrophoneStatusChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED,
-			callback);
+    cordovaEventManager.off(E_ML_DEVICE_STATUS_MICROPHONE_STATUS_CHANGED, callback);
 };
-
 /**
  * 4.10.7 Set Open Microphone.
  * 
@@ -1205,16 +1111,15 @@ mirrorlink.devicestatus.offMicrophoneStatusChanged = function(callback) {
  *            application MUST set the Mic Input flag to true if the Voice input
  *            flag is set to true.
  */
-mirrorlink.devicestatus.setMicrophoneOpen = function(micInput, voiceInput,
-		callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'DeviceStatus', 'setMicrophoneOpen', [
-				micInput, voiceInput ]);
-	}
+mirrorlink.devicestatus.setMicrophoneOpen = function(micInput, voiceInput, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'DeviceStatus', 'setMicrophoneOpen', [
+            micInput,
+            voiceInput
+        ]);
+    }
 };
-
 // -------- DEVICE DISPLAY -----------//
-
 /**
  * 4.5.1 Display Configuration.
  * 
@@ -1251,11 +1156,10 @@ mirrorlink.devicestatus.setMicrophoneOpen = function(micInput, voiceInput,
  *         {@link Defs.DisplayConfiguration}, of the MirrorLink session.
  */
 mirrorlink.display.getDisplayConfiguration = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Display', 'getDisplayConfiguration', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Display', 'getDisplayConfiguration', []);
+    }
 };
-
 /**
  * 4.5.2 Display Configuration Callback.
  * 
@@ -1267,14 +1171,11 @@ mirrorlink.display.getDisplayConfiguration = function(callback, err) {
  *            {@link Defs.DisplayConfiguration}.
  */
 mirrorlink.display.onDisplayConfigurationChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DISPLAY_CONFIGURATION_CHANGED, 'Display',
-				'onDisplayConfigurationChanged', [], err).on(
-				E_ML_DISPLAY_CONFIGURATION_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DISPLAY_CONFIGURATION_CHANGED, 'Display', 'onDisplayConfigurationChanged', [], err)
+            .on(E_ML_DISPLAY_CONFIGURATION_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1283,9 +1184,8 @@ mirrorlink.display.onDisplayConfigurationChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.display.offDisplayConfigurationChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DISPLAY_CONFIGURATION_CHANGED, callback);
+    cordovaEventManager.off(E_ML_DISPLAY_CONFIGURATION_CHANGED, callback);
 };
-
 /**
  * 4.5.3 Client Pixel Format.
  * 
@@ -1296,11 +1196,10 @@ mirrorlink.display.offDisplayConfigurationChanged = function(callback) {
  *         defined in {@link Defs.ClientPixelFormat}.
  */
 mirrorlink.display.getClientPixelFormat = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Display', 'getClientPixelFormat', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Display', 'getClientPixelFormat', []);
+    }
 };
-
 /**
  * 4.5.4 Client Pixel Format Callback.
  * 
@@ -1311,14 +1210,11 @@ mirrorlink.display.getClientPixelFormat = function(callback, err) {
  *            defined in {@link Defs.ClientPixelFormat}.
  */
 mirrorlink.display.onPixelFormatChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, 'Display',
-				'onPixelFormatChanged', [], err).on(
-				E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, 'Display', 'onPixelFormatChanged', [], err)
+            .on(E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1327,11 +1223,9 @@ mirrorlink.display.onPixelFormatChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.display.offPixelFormatChanged = function(callback) {
-	cordovaEventManager.off(E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, callback);
+    cordovaEventManager.off(E_ML_DISPLAY_PIXEL_FORMAT_CHANGED, callback);
 };
-
 // -------- EVENT MAPPING -----------//
-
 /**
  * 4.6.1 Event Configuration.
  * 
@@ -1349,13 +1243,10 @@ mirrorlink.display.offPixelFormatChanged = function(callback) {
  *         defined in {@link Defs.EventConfiguration}.
  */
 mirrorlink.eventmapping.getEventConfiguration = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova
-				.exec(callback, err, 'EventMapping', 'getEventConfiguration',
-						[]);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'EventMapping', 'getEventConfiguration', []);
+    }
 };
-
 /**
  * 4.6.2 Event Configuration Callback.
  * 
@@ -1367,14 +1258,11 @@ mirrorlink.eventmapping.getEventConfiguration = function(callback, err) {
  *            {@link Defs.EventConfiguration}.
  */
 mirrorlink.eventmapping.onEventConfigurationChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED, 'EventMapping',
-				'onEventConfigurationChanged', [], err).on(
-				E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED, 'EventMapping', 'onEventConfigurationChanged', [], err)
+            .on(E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1383,10 +1271,8 @@ mirrorlink.eventmapping.onEventConfigurationChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.eventmapping.offEventConfigurationChanged = function(callback) {
-	cordovaEventManager.off(E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED,
-			callback);
+    cordovaEventManager.off(E_ML_EVENTMAPPING_EVENT_CONFIGURATION_CHANGED, callback);
 };
-
 /**
  * 4.6.3 Get Event Mapping.
  * 
@@ -1402,11 +1288,10 @@ mirrorlink.eventmapping.offEventConfigurationChanged = function(callback) {
  *         {@link Defs.EventMapping}.
  */
 mirrorlink.eventmapping.getEventMappings = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'EventMapping', 'getEventMappings', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'EventMapping', 'getEventMappings', []);
+    }
 };
-
 /**
  * 4.6.4 Get Event Mapping Callback.
  * 
@@ -1418,14 +1303,11 @@ mirrorlink.eventmapping.getEventMappings = function(callback, err) {
  *            is a Bundle with the fields defined in {@link Defs.EventMapping}.
  */
 mirrorlink.eventmapping.onEventMappingChanged = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, 'EventMapping',
-				'onEventMappingChanged', [], err).on(
-				E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, callback);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, 'EventMapping', 'onEventMappingChanged', [], err)
+            .on(E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1434,11 +1316,9 @@ mirrorlink.eventmapping.onEventMappingChanged = function(callback, err) {
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.eventmapping.offEventMappingChanged = function(callback) {
-	cordovaEventManager.off(E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, callback);
+    cordovaEventManager.off(E_ML_EVENTMAPPING_EVENT_MAPPING_CHANGED, callback);
 };
-
 // -------- NOTIFICATION -----------//
-
 /**
  * 4.12.1 Notifications Supported.
  * 
@@ -1451,14 +1331,13 @@ mirrorlink.eventmapping.offEventMappingChanged = function(callback) {
  * @param notificationSupported
  *            Flag indicating notification support from the application.
  */
-mirrorlink.notification.setNotificationSupported = function(
-		notificationSupported, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification', 'setNotificationSupported',
-				[ notificationSupported ]);
-	}
+mirrorlink.notification.setNotificationSupported = function(notificationSupported, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'setNotificationSupported', [
+            notificationSupported
+        ]);
+    }
 };
-
 /**
  * 4.12.2 Notifications Enabled.
  * 
@@ -1469,12 +1348,10 @@ mirrorlink.notification.setNotificationSupported = function(
  *         and Client for the application.
  */
 mirrorlink.notification.getNotificationEnabled = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification', 'getNotificationEnabled',
-				[]);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'getNotificationEnabled', []);
+    }
 };
-
 /**
  * 4.12.3 Notifications Enabled Callback.
  * 
@@ -1483,16 +1360,14 @@ mirrorlink.notification.getNotificationEnabled = function(callback, err) {
  * @param notiEnabled
  *            The flag indicating the notifications are enabled or not.
  */
-mirrorlink.notification.onNotificationEnabledChanged = function(notiEnabled,
-		callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED, 'Notification',
-				'onNotificationEnabledChanged', [ notiEnabled ], err).on(
-				E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED, callback);
-	}
+mirrorlink.notification.onNotificationEnabledChanged = function(notiEnabled, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED, 'Notification', 'onNotificationEnabledChanged', [
+                notiEnabled
+            ], err)
+            .on(E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1501,10 +1376,8 @@ mirrorlink.notification.onNotificationEnabledChanged = function(notiEnabled,
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.notification.offNotificationEnabledChanged = function(callback) {
-	cordovaEventManager.off(E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED,
-			callback);
+    cordovaEventManager.off(E_ML_NOTIFICATION_NOTIFICATION_ENABLED_CHANGED, callback);
 };
-
 /**
  * 4.12.4 Notification Configuration.
  * 
@@ -1515,12 +1388,10 @@ mirrorlink.notification.offNotificationEnabledChanged = function(callback) {
  *         available are defined in {@link Defs.NotificationConfiguration}.
  */
 mirrorlink.notification.getNotificationConfiguration = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification',
-				'getNotificationConfiguration', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'getNotificationConfiguration', []);
+    }
 };
-
 /**
  * 4.12.5 Notification Configuration Callback.
  * 
@@ -1531,17 +1402,14 @@ mirrorlink.notification.getNotificationConfiguration = function(callback, err) {
  *            fields available are defined in
  *            {@link Defs.NotificationConfiguration}.
  */
-mirrorlink.notification.onNotificationConfigurationChanged = function(
-		notificationConfiguration, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED,
-				'Notification', 'onNotificationConfigurationChanged',
-				[ notificationConfiguration ], err).on(
-				E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED, callback);
-	}
+mirrorlink.notification.onNotificationConfigurationChanged = function(notificationConfiguration, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED, 'Notification', 'onNotificationConfigurationChanged', [
+                notificationConfiguration
+            ], err)
+            .on(E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
  * 
@@ -1550,10 +1418,8 @@ mirrorlink.notification.onNotificationConfigurationChanged = function(
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.notification.offNotificationConfigurationChanged = function(callback) {
-	cordovaEventManager.off(
-			E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED, callback);
+    cordovaEventManager.off(E_ML_NOTIFICATION_NOTIFICATION_CONFIGURATION_CHANGED, callback);
 };
-
 /**
  * 4.12.6 Send Notification for client-based Notification UI.
  * 
@@ -1572,14 +1438,15 @@ mirrorlink.notification.offNotificationConfigurationChanged = function(callback)
  * @return The notification identifier; a Zero value will be returned, if the
  *         action was not successful.
  */
-mirrorlink.notification.sendClientNotification = function(title, body, iconUrl,
-		actionList, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification', 'sendClientNotification', [
-				title, body, iconUrl, actionList ]);
-	}
+mirrorlink.notification.sendClientNotification = function(title, body, iconUrl, actionList, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'sendClientNotification', [
+            title, body,
+            iconUrl,
+            actionList
+        ]);
+    }
 };
-
 /**
  * 4.12.7 Send Notification for VNC-based Notification UI.
  * 
@@ -1590,11 +1457,10 @@ mirrorlink.notification.sendClientNotification = function(title, body, iconUrl,
  *         action was not successful.
  */
 mirrorlink.notification.sendVncNotification = function(callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification', 'sendVncNotification', []);
-	}
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'sendVncNotification', []);
+    }
 };
-
 /**
  * 4.12.8 Cancel Notification.
  * 
@@ -1603,14 +1469,13 @@ mirrorlink.notification.sendVncNotification = function(callback, err) {
  * @param notificationId
  *            Identifier of the notification, which needs to get canceled.
  */
-mirrorlink.notification.cancelNotification = function(notificationId, callback,
-		err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordova.exec(callback, err, 'Notification', 'cancelNotification',
-				[ notificationId ]);
-	}
+mirrorlink.notification.cancelNotification = function(notificationId, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordova.exec(callback, err, 'Notification', 'cancelNotification', [
+            notificationId
+        ]);
+    }
 };
-
 /**
  * 4.12.9 Receive Action Callback.
  * 
@@ -1621,27 +1486,23 @@ mirrorlink.notification.cancelNotification = function(notificationId, callback,
  * @param actionId
  *            Action identifier
  */
-mirrorlink.notification.onNotificationActionReceived = function(notificationId,
-		actionId, callback, err) {
-	if (typeof callback === 'function' && typeof err === 'function') {
-		cordovaEventManager.createServiceListener(
-				E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED, 'Notification',
-				'onNotificationActionReceived', [ notificationId, actionId ],
-				err).on(E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED,
-				callback);
-	}
+mirrorlink.notification.onNotificationActionReceived = function(notificationId, actionId, callback, err) {
+    if (typeof callback === 'function' && typeof err === 'function') {
+        cordovaEventManager.createServiceListener(E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED, 'Notification', 'onNotificationActionReceived', [
+                notificationId,
+                actionId
+            ], err)
+            .on(E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED, callback);
+    }
 };
-
 /**
  * Remove listeners from "mirrorlink_certification_status_changed" event.
- * 
+ *
  * @param {function|undefined}
  *            callback Callback you want to stop to listen to event. If
  *            'callback' is undefined, it removes all the event listeners.
  */
 mirrorlink.notification.offNotificationActionReceived = function(callback) {
-	cordovaEventManager.off(E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED,
-			callback);
+    cordovaEventManager.off(E_ML_NOTIFICATION_NOTIFICATION_ACTION_RECEIVED, callback);
 };
-
 module.exports = mirrorlink;
