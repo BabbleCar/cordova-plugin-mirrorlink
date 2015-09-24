@@ -1,0 +1,26 @@
+{
+  "name": "cordova-plugin-mirrorlink",
+  "version": "1.0.0",
+  "description": "Plugin cordova for MirrorLink Technology ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova",
+    "phonegap",
+    "mirrolink",
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BabbleCar/cordova-plugin-mirrorlink.git"
+  },
+  "author": "BabbleCar <christophe.robert@babblecar.com> (http://babblecar.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BabbleCar/cordova-plugin-mirrorlink/issues"
+  },
+  "homepage": "https://github.com/BabbleCar/cordova-plugin-mirrorlink"
+}
