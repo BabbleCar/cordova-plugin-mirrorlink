@@ -155,8 +155,8 @@ Install via repo url directly
 **4.9.5 onFramebufferUnblocked**
 
 ```javascript
-    window.cordova.plugins.MirrorLink.context.onAudioBlocked(callback, err);
-    window.cordova.plugins.MirrorLink.context.offAudioBlocked(callback);
+    window.cordova.plugins.MirrorLink.context.onFramebufferUnblocked(callback, err);
+    window.cordova.plugins.MirrorLink.context.offFramebufferUnblocked(callback);
 ```
 
 **4.9.6 onAudioUnblocked**
