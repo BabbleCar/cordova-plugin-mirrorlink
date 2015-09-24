@@ -2,7 +2,7 @@
 
 Plugin cordova for MirrorLink Technology 
 
-Version stable.
+Version stable By [BabbleCar](http://babblecar.com).
 
 ## Revision Common Api
 
@@ -10,10 +10,13 @@ Version stable.
 
 ## Installation
 
-This requires cordova 5.0+
+Using the Cordova CLI
+
+    cordova plugins add cordova-plugin-mirrorlink
+
 Install via repo url directly
 
-    ccordova plugins add https://github.com/BabbleCar/cordova-plugin-mirrorlink.git
+    cordova plugins add https://github.com/BabbleCar/cordova-plugin-mirrorlink.git
 
 ## Supported Platforms
 
