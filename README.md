@@ -112,7 +112,7 @@ Install via repo url directly
     window.cordova.plugins.MirrorLink.connection.offAudioConnectionsChanged(callback);
 ```
 
-**4.4.5  getAudioConnections**
+**4.4.5  getRemoteDisplayConnections**
 
 ```javascript
     window.cordova.plugins.MirrorLink.connection.getRemoteDisplayConnections(callback, err);
